@@ -23,9 +23,6 @@ cv:
         studyType: Degree in Computer Science Engineering
         start_date: 2017-09
         end_date: 2022-06
-        highlights:
-          - Description 1.
-          - Description 2.
 
     Experience:
       - company: Universitat Autònoma de Barcelona
