@@ -2,19 +2,15 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle:
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: me.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
-
 selected_papers: true # includes a list of papers marked as "selected={true}"
-social: true # includes social icons at the bottom of the page
+social: false # includes social icons at the bottom of the page
 
 announcements:
   enabled: true # includes a list of news items
@@ -27,8 +23,13 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](https://www.reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+***[Ask. Search. Learn. Repeat.](https://www.youtube.com/watch?v=UZb2NOHPA2A)***
 
-Put your address / P.O. box / other info right below your picture. You can also disable any of these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
+I’m **Domènec**, a **Computer Science Engineer** graduated from the *Autonomous University of Barcelona*. Later on, I completed a Master’s degree in **Cybersecurity and Privacy** at *Universitat Oberta de Catalunya*.
 
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+If everything goes as planned, I’ll be starting my **PhD next September**, continuing a research path that I’ve been shaping over the past years at *UAB*. In parallel, I teach lab sessions for the **Computer Networks** course in the Computer Science degree, and I’m currently supervising four Bachelor’s Thesis.
+
+My deep interest in **cryptography**, **privacy**, and **distributed systems** naturally led me into the world of **Bitcoin**. I’ve worked on projects ranging from building a parallel Bitcoin mainnet environment in Docker for realistic testing, to hardware‑wallet fingerprinting, to analyzing anti‑exfiltration protocols and other privacy‑oriented mechanisms.  
+<sub>*If you're curious about any of this, you can explore some of my recent work in my [blog :)](https://domenec-madrid.github.io/blog)*</sub>
+
+Outside the academic and technical bubble, I’m usually out hiking with my dog. I like staying in constant learning mode, so if you ever want to reach out or comment on something, don’t hesitate to [contact me!](https://domenec-madrid.github.io/contact).  
