@@ -1,10 +1,7 @@
 cv:
   name: Domènec Madrid
-  label: Computer Science Engineer
   email: Domenec.Madrid@uab.cat
   location: Spain
-  image: ""
-  summary:
 
   social_networks:
     - network: LinkedIn
@@ -14,13 +11,15 @@ cv:
     Education:
       - institution: Universitat Oberta de Catalunya
         location: Remote
-        studyType: Master's Degree in Cybersecurity and Privacy
+        area: Cybersecurity and Privacy
+        degree: Master's Degree
         start_date: 2024-09
         end_date: 2025-06
 
       - institution: Universitat Autònoma de Barcelona
         location: Bellaterra
-        studyType: Degree in Computer Science Engineering
+        area: Computer Science Engineering
+        degree: Bachelor's Degree
         start_date: 2017-09
         end_date: 2022-06
 
