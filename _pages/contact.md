@@ -7,7 +7,7 @@ nav: true
 nav_order: 6
 ---
 
-Feel free to reach out if you want to discuss research, have questions about any of my work, or just want to talk about Bitcoin, cryptography, or privacy! 
+Feel free to reach out if you want to discuss research, have questions about any of my work, or just want to talk about Bitcoin, cryptography, or privacy!
 
 ---
 

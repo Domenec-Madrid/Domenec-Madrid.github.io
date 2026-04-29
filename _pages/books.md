@@ -5,4 +5,3 @@ permalink: /books/
 nav: true
 collection: books
 ---
-

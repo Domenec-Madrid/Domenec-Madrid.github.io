@@ -7,7 +7,7 @@ tags: ["Bitcoin", "Cryptography", "Hardware Wallets", "Wallet Fingerprinting", "
 categories:
 ---
 
-When we think about Bitcoin privacy, most people focus on address reuse or network-level tracking. But there's a subtler question that doesn't get nearly enough attention: can someone tell *which hardware wallet signed a transaction just by looking at the signature*?
+When we think about Bitcoin privacy, most people focus on address reuse or network-level tracking. But there's a subtler question that doesn't get nearly enough attention: can someone tell _which hardware wallet signed a transaction just by looking at the signature_?
 
 This is exactly what Jordi Herrera-Joancomartí and I set out to investigate. The short answer is: yes, partially — and the details are worth understanding.
 
@@ -58,7 +58,8 @@ Some wallets — notably Bitcoin Core since v0.17.0 — iterate over candidate n
    loading="lazy" %}
 
 The fingerprinting logic here is asymmetric:
-- A **72-byte signature** means the wallet does *not* implement low-$r$ grinding.
+
+- A **72-byte signature** means the wallet does _not_ implement low-$r$ grinding.
 - A **71-byte signature** doesn't prove grinding — it could just be a lucky nonce.
 
 It's probabilistic, not definitive. But it's real.
@@ -97,10 +98,10 @@ We tested ten devices, all initialized with the same BIP-39 seed phrase, all con
 
 The results clustered into three groups:
 
-| Group | Behavior |
-|---|---|
-| RFC 6979, no low-$r$ grinding | Deterministic signatures, 71–72 byte range |
-| RFC 6979 + low-$r$ grinding | Deterministic, always 71 bytes |
+| Group                           | Behavior                                      |
+| ------------------------------- | --------------------------------------------- |
+| RFC 6979, no low-$r$ grinding   | Deterministic signatures, 71–72 byte range    |
+| RFC 6979 + low-$r$ grinding     | Deterministic, always 71 bytes                |
 | Anti-exfil, no low-$r$ grinding | Non-deterministic by design, 71–72 byte range |
 
 The [Anti-Exfil](https://medium.com/blockstream/anti-exfil-stopping-key-exfiltration-589f02facc2e) group is particularly interesting: wallets like **BitBox02** and **Jade** deliberately introduce external randomness into nonce generation to prevent covert channel attacks (like Dark Skippy, which I've written about [before](/blog/2025/cvca/)). This makes their signatures non-deterministic — and therefore distinguishable from the rest.
@@ -109,18 +110,18 @@ On SIGHASH support, the picture was stark. Most wallets refused to sign with any
 
 Here's the summary:
 
-| Wallet | Low-$r$ | NONE | SINGLE | ANYONECANPAY variants |
-|---|:---:|:---:|:---:|:---:|
-| Ledger Nano S+ | ✗ | ✓ | ✓ | ✓ |
-| BitBox02 | ✗ | ✗ | ✗ | ✗ |
-| Foundation Passport | ✗ | ✗ | ✗ | ✗ |
-| Trezor Safe 3 | ✗ | ✗ | ✗ | ✗ |
-| Trezor Safe 5 | ✗ | ✗ | ✗ | ✗ |
-| Coldcard Mk4 | ✓ | ✗ | ✗ | ✗ |
-| Jade | ✓ | ✗ | ✗ | ✗ |
-| KeepKey | ✗ | ✗ | ✗ | ✗ |
-| Keystone 3 Pro | ✗ | ✓ | ✓ | ✓ |
-| SeedSigner | ✓ | ✗ | ✗ | ✗ |
+| Wallet              | Low-$r$ | NONE | SINGLE | ANYONECANPAY variants |
+| ------------------- | :-----: | :--: | :----: | :-------------------: |
+| Ledger Nano S+      |    ✗    |  ✓   |   ✓    |           ✓           |
+| BitBox02            |    ✗    |  ✗   |   ✗    |           ✗           |
+| Foundation Passport |    ✗    |  ✗   |   ✗    |           ✗           |
+| Trezor Safe 3       |    ✗    |  ✗   |   ✗    |           ✗           |
+| Trezor Safe 5       |    ✗    |  ✗   |   ✗    |           ✗           |
+| Coldcard Mk4        |    ✓    |  ✗   |   ✗    |           ✗           |
+| Jade                |    ✓    |  ✗   |   ✗    |           ✗           |
+| KeepKey             |    ✗    |  ✗   |   ✗    |           ✗           |
+| Keystone 3 Pro      |    ✗    |  ✓   |   ✓    |           ✓           |
+| SeedSigner          |    ✓    |  ✗   |   ✗    |           ✗           |
 
 ---
 
@@ -136,4 +137,4 @@ Future work should combine hardware wallet signatures with the much richer finge
 
 ---
 
-*This post is based on joint work with [Jordi Herrera-Joancomartí](mailto:Jordi.Herrera@uab.cat) (UAB), partially supported by the SECURING/NET, SAFE-BLOCKCHAIN, DANGER, and AGAUR SGR2021-00643 projects.*
+_This post is based on joint work with [Jordi Herrera-Joancomartí](mailto:Jordi.Herrera@uab.cat) (UAB), partially supported by the SECURING/NET, SAFE-BLOCKCHAIN, DANGER, and AGAUR SGR2021-00643 projects._

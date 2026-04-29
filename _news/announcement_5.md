@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Presented our paper [*Is Hardware Wallet Fingerprinting Even Possible?*](/blog/2026/hww-fingerprinting/) at **RECSI 2026** in Tenerife 🌋.
+Presented our paper [_Is Hardware Wallet Fingerprinting Even Possible?_](/blog/2026/hww-fingerprinting/) at **RECSI 2026** in Tenerife 🌋.
