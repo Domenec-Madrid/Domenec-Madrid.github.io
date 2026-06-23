@@ -2,7 +2,7 @@
 layout: post
 title: Is Hardware Wallet Fingerprinting Even Possible?
 date: 2026-04-01
-description:
+description: Can you tell which hardware wallet signed a Bitcoin transaction just by looking at its ECDSA or Schnorr signature? We tested ten devices and found out.
 tags: ["Bitcoin", "Cryptography", "Hardware Wallets", "Wallet Fingerprinting", "Signatures", "Privacy"]
 categories:
 ---
@@ -33,6 +33,175 @@ Since [BIP-62](https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki), 
 #### Schnorr (Taproot)
 
 Schnorr signatures always encode to exactly **64 bytes**, 32 for the $x$-coordinate of the nonce point $R$, and 32 for $s$. No DER encoding, no variable length, no malleability.
+
+---
+
+<div class="card my-4 border" id="ecdsa-demo">
+  <div class="card-body">
+    <h6 class="card-title fw-bold mb-1">ECDSA vs Schnorr — signature length visualizer</h6>
+    <p class="card-text text-muted mb-3" style="font-size:0.85rem">
+      Random values simulate the nonce-derived $r$ and the BIP-62-normalized $s$. Hover any byte for its role.
+    </p>
+    <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+      <button class="btn btn-sm btn-primary" id="ecdsa-sign-btn">Sign</button>
+      <button class="btn btn-sm btn-outline-secondary" id="ecdsa-sign-many-btn">Sign 100×</button>
+      <div class="form-check form-switch mb-0">
+        <input class="form-check-input" type="checkbox" id="ecdsa-lowr-toggle">
+        <label class="form-check-label small" for="ecdsa-lowr-toggle">Low-<em>r</em> grinding</label>
+      </div>
+    </div>
+    <div id="ecdsa-output" style="display:none">
+      <div class="d-flex gap-3 mb-3 flex-wrap">
+        <div class="text-center">
+          <div id="ecdsa-badge-len" class="badge fs-6">?? bytes</div>
+          <div class="small text-muted mt-1">ECDSA size</div>
+        </div>
+        <div class="text-center" id="ecdsa-attempts-block" style="display:none">
+          <div id="ecdsa-badge-attempts" class="badge bg-secondary fs-6">? attempt</div>
+          <div class="small text-muted mt-1">grinding rounds</div>
+        </div>
+        <div class="text-center">
+          <div class="badge bg-info fs-6" style="color:#000">64 bytes</div>
+          <div class="small text-muted mt-1">Schnorr size</div>
+        </div>
+      </div>
+      <div class="mb-2">
+        <div class="small fw-bold mb-1">ECDSA — DER encoding</div>
+        <div id="ecdsa-der-viz" class="font-monospace" style="word-break:break-all;line-height:2.1;font-size:0.78rem"></div>
+        <div class="mt-2 d-flex flex-wrap gap-1" style="font-size:0.75rem">
+          <span class="badge" style="background:#6c757d">structure</span>
+          <span class="badge" style="background:#0d6efd">r bytes</span>
+          <span class="badge" style="background:#dc3545">0x00 padding</span>
+          <span class="badge" style="background:#198754">s bytes</span>
+          <span class="badge" style="background:#6f42c1">SIGHASH</span>
+        </div>
+      </div>
+      <div class="mt-3">
+        <div class="small fw-bold mb-1">Schnorr (Taproot) — always 64 bytes, no DER</div>
+        <div id="ecdsa-schnorr-viz" class="font-monospace" style="word-break:break-all;line-height:2.1;font-size:0.78rem"></div>
+        <div class="mt-2 d-flex flex-wrap gap-1" style="font-size:0.75rem">
+          <span class="badge" style="background:#0d6efd">R x-coord (32 B)</span>
+          <span class="badge" style="background:#198754">s (32 B)</span>
+        </div>
+      </div>
+      <div id="ecdsa-many-stats" style="display:none" class="mt-3 p-2 rounded" style="background:var(--global-code-bg-color)">
+        <div class="small fw-bold">Last 100 signatures:</div>
+        <div class="d-flex gap-3 mt-1 small">
+          <span><strong id="ecdsa-c71">0</strong> × 71 bytes</span>
+          <span><strong id="ecdsa-c72">0</strong> × 72 bytes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function randBytes(n) {
+    const a = new Uint8Array(n);
+    crypto.getRandomValues(a);
+    return a;
+  }
+
+  function signECDSA(grind) {
+    let r, attempts = 0;
+    do {
+      r = randBytes(32);
+      attempts++;
+    } while (grind && r[0] >= 0x80 && attempts < 500);
+
+    // BIP-62: low-s ⟹ s[0] always < 0x80
+    const s = randBytes(32);
+    s[0] = s[0] & 0x7f;
+    if (s[0] === 0) s[0] = 0x01;
+
+    const needsPad = r[0] >= 0x80;
+    const rLen = needsPad ? 33 : 32;
+    // structure: 0x30 totalLen 0x02 rLen [pad] r 0x02 0x20 s 0x01
+    const totalLen = 2 + rLen + 2 + 32;
+    const sigLen = 1 + 1 + totalLen + 1; // +1 sighash
+
+    return { r, s, needsPad, rLen, totalLen, sigLen, attempts };
+  }
+
+  function byte(hex, title, bg, fg) {
+    fg = fg || '#fff';
+    return '<span title="' + title + '" style="display:inline-block;background:' + bg +
+      ';color:' + fg + ';padding:1px 5px;border-radius:3px;margin:1px 1px;cursor:default;font-size:0.78rem">' + hex + '</span>';
+  }
+
+  function renderDER(sig) {
+    const { r, s, needsPad, rLen, totalLen } = sig;
+    let h = '';
+    h += byte('30', 'SEQUENCE tag', '#6c757d');
+    h += byte(totalLen.toString(16).padStart(2, '0'), 'total length: ' + totalLen + ' bytes', '#6c757d');
+    h += byte('02', 'INTEGER tag (r)', '#0d6efd');
+    h += byte(rLen.toString(16).padStart(2, '0'), 'r length: ' + rLen + ' bytes', '#0d6efd');
+    if (needsPad) h += byte('00', 'padding: r[0] ≥ 0x80, two\'s-complement sign bit', '#dc3545');
+    Array.from(r).forEach(function (b, i) {
+      h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']' + (i === 0 && needsPad ? ' — would be negative without padding' : ''), '#0d6efd');
+    });
+    h += byte('02', 'INTEGER tag (s)', '#198754');
+    h += byte('20', 's length: 32 bytes (BIP-62 low-s ⟹ never needs padding)', '#198754');
+    Array.from(s).forEach(function (b, i) {
+      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', '#198754');
+    });
+    h += byte('01', 'SIGHASH_ALL', '#6f42c1');
+    return h;
+  }
+
+  function renderSchnorr() {
+    const R = randBytes(32);
+    const s = randBytes(32);
+    let h = '';
+    Array.from(R).forEach(function (b, i) {
+      h += byte(b.toString(16).padStart(2, '0'), 'R[' + i + '] — nonce point x-coordinate', '#0d6efd');
+    });
+    Array.from(s).forEach(function (b, i) {
+      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', '#198754');
+    });
+    return h;
+  }
+
+  function updateUI(sig) {
+    const grind = document.getElementById('ecdsa-lowr-toggle').checked;
+    document.getElementById('ecdsa-badge-len').textContent = sig.sigLen + ' bytes';
+    document.getElementById('ecdsa-badge-len').className = 'badge fs-6 ' + (sig.sigLen === 71 ? 'bg-success' : 'bg-warning');
+    document.getElementById('ecdsa-badge-len').style.color = sig.sigLen === 71 ? '' : '#000';
+    const attBlock = document.getElementById('ecdsa-attempts-block');
+    if (grind) {
+      attBlock.style.display = '';
+      document.getElementById('ecdsa-badge-attempts').textContent = sig.attempts + ' attempt' + (sig.attempts !== 1 ? 's' : '');
+    } else {
+      attBlock.style.display = 'none';
+    }
+    document.getElementById('ecdsa-der-viz').innerHTML = renderDER(sig);
+    document.getElementById('ecdsa-schnorr-viz').innerHTML = renderSchnorr();
+    document.getElementById('ecdsa-output').style.display = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('ecdsa-sign-btn').addEventListener('click', function () {
+      const sig = signECDSA(document.getElementById('ecdsa-lowr-toggle').checked);
+      updateUI(sig);
+      document.getElementById('ecdsa-many-stats').style.display = 'none';
+    });
+
+    document.getElementById('ecdsa-sign-many-btn').addEventListener('click', function () {
+      const grind = document.getElementById('ecdsa-lowr-toggle').checked;
+      let c71 = 0, c72 = 0;
+      for (let i = 0; i < 100; i++) {
+        const s = signECDSA(grind);
+        s.sigLen === 71 ? c71++ : c72++;
+      }
+      updateUI(signECDSA(grind));
+      document.getElementById('ecdsa-c71').textContent = c71;
+      document.getElementById('ecdsa-c72').textContent = c72;
+      document.getElementById('ecdsa-many-stats').style.display = '';
+    });
+  });
+})();
+</script>
 
 ---
 
