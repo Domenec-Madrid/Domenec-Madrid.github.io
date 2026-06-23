@@ -55,7 +55,7 @@ ninja.data = [{
         
           title: "Is Hardware Wallet Fingerprinting Even Possible?",
         
-        description: "",
+        description: "Can you tell which hardware wallet signed a Bitcoin transaction just by looking at its ECDSA or Schnorr signature? We tested ten devices and found out.",
         section: "Posts",
         handler: () => {
           
@@ -66,7 +66,7 @@ ninja.data = [{
         
           title: "Covert-Nonce Channel Attacks on Bitcoin Hardware Wallets",
         
-        description: "",
+        description: "How a compromised hardware wallet can silently leak your Bitcoin seed through the signatures it produces — and what the Anti-Exfil protocol does to stop it.",
         section: "Posts",
         handler: () => {
           
@@ -77,7 +77,7 @@ ninja.data = [{
         
           title: "Build Your Own Bitcoin Main-net",
         
-        description: "",
+        description: "How we built a fully isolated Bitcoin mainnet replica in Docker — same genesis block as the real network, zero-cost transactions, and hardware wallet support out of the box.",
         section: "Posts",
         handler: () => {
           
