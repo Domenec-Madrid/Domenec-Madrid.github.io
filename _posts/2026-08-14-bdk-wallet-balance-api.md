@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Teaching a Bitcoin Wallet to Trust the Right Coins
+title: Modifying the bdk_wallet Balance API for My Summer of Bitcoin Project
 date: 2026-08-14
-description: My Summer of Bitcoin work on BDK's balance API — why a wallet should decide which unconfirmed coins to trust by looking at where the money came from, not at where it landed.
+description: How I changed the way bdk_wallet decides which unconfirmed coins count as trusted, by following where the money came from instead of which keychain it landed on.
 tags: ["Bitcoin", "BDK", "Rust", "Wallets", "Summer of Bitcoin", "Open Source"]
 categories:
 ---
