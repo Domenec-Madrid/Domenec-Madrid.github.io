@@ -51,11 +51,11 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/books/";
           },
-        },{id: "post-teaching-a-bitcoin-wallet-to-trust-the-right-coins",
+        },{id: "post-modifying-the-bdk-wallet-balance-api-for-my-summer-of-bitcoin-project",
         
-          title: "Teaching a Bitcoin Wallet to Trust the Right Coins",
+          title: "Modifying the bdk_wallet Balance API for My Summer of Bitcoin Project",
         
-        description: "My Summer of Bitcoin work on BDK&#39;s balance API — why a wallet should decide which unconfirmed coins to trust by looking at where the money came from, not at where it landed.",
+        description: "How I changed the way bdk_wallet decides which unconfirmed coins count as trusted, by following where the money came from instead of which keychain it landed on.",
         section: "Posts",
         handler: () => {
           
