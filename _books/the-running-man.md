@@ -1,8 +1,8 @@
 ---
 layout: book-review
-title: "La larga marcha"
+title: "The Running Man"
 author: "Stephen King"
-olid: OL7574109M
+olid: OL7572318M
 category: dystopian
 status: finished
 ---

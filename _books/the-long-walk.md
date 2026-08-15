@@ -1,7 +1,8 @@
 ---
 layout: book-review
-title: "El visitante"
+title: "The Long Walk"
 author: "Stephen King"
-category: horror
+olid: OL7574109M
+category: dystopian
 status: finished
 ---

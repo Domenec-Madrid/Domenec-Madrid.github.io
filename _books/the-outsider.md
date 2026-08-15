@@ -1,8 +1,8 @@
 ---
 layout: book-review
-title: "El pistolero"
+title: "The Outsider"
 author: "Stephen King"
-olid: OL24944189M
-category: fantasy
+isbn: "1473676401"
+category: horror
 status: finished
 ---

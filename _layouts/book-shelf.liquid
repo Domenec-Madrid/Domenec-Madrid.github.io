@@ -36,9 +36,28 @@ layout: page
               {% if item.cover %}
                 <img alt="{{ item.title }} cover" src="{{ item.cover | prepend: page.covers | relative_url }}" style="height:200px">
               {% elsif item.olid %}
-                <img alt="{{ item.title }} cover" src="https://covers.openlibrary.org/b/olid/{{ item.olid }}-L.jpg?default=false" style="height:200px">
+                <img
+                  alt="{{ item.title }} cover"
+                  src="https://covers.openlibrary.org/b/olid/{{ item.olid }}-L.jpg?default=false"
+                  style="height:200px"
+                >
               {% elsif item.isbn %}
-                <img alt="{{ item.title }} cover" src="https://covers.openlibrary.org/b/isbn/{{ item.isbn }}-L.jpg?default=false" style="height:200px">
+                <img
+                  alt="{{ item.title }} cover"
+                  src="https://covers.openlibrary.org/b/isbn/{{ item.isbn }}-L.jpg?default=false"
+                  style="height:200px"
+                >
+              {% else %}
+                {% comment %}
+                  No cover art available: fall back to a plain card showing the
+                  title and author, so the shelf never renders an empty slot.
+                {% endcomment %}
+                <span class="cover-placeholder">
+                  <span class="cover-placeholder-title">{{ item.title }}</span>
+                  {% if item.author %}
+                    <span class="cover-placeholder-author">{{ item.author }}</span>
+                  {% endif %}
+                </span>
               {% endif %}
               {% if item.status %}
                 {% assign statuses = 'abandoned,finished,interested,paused,queued,reading,reread' | split: ',' %}

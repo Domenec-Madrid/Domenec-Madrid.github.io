@@ -1,6 +1,6 @@
 ---
 layout: book-review
-title: "El alquimista"
+title: "The Alchemist"
 author: "Paulo Coelho"
 olid: OL47097270M
 category: classics

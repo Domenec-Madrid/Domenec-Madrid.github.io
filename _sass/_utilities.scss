@@ -504,6 +504,38 @@ figure.cover {
     vertical-align: bottom;
   }
 
+  /* Shown instead of the artwork when a book has no cover available, so the
+     shelf never renders an empty slot. Sized to match the 200px covers at a
+     roughly 2:3 book ratio. */
+  .cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    box-sizing: border-box;
+    width: 133px;
+    height: 200px;
+    padding: 0.6rem;
+    overflow: hidden;
+    vertical-align: bottom;
+    border: 1px solid var(--global-divider-color);
+    border-radius: 2px;
+    background-color: var(--global-card-bg-color);
+    color: var(--global-text-color);
+  }
+
+  .cover-placeholder-title {
+    font-size: 0.8rem;
+    font-weight: bold;
+    line-height: 1.25;
+  }
+
+  .cover-placeholder-author {
+    font-size: 0.7rem;
+    line-height: 1.2;
+    opacity: 0.7;
+  }
+
   figcaption.abandoned {
     font-family: monospace;
     color: #23212d;

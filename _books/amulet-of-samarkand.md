@@ -1,6 +1,6 @@
 ---
 layout: book-review
-title: "El amuleto de Samarkanda"
+title: "The Amulet of Samarkand"
 author: "Jonathan Stroud"
 olid: OL30524859M
 category: fantasy

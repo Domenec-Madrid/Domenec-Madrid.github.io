@@ -1,8 +1,8 @@
 ---
 layout: book-review
-title: "La sombra de los dioses"
+title: "The Hunger of the Gods"
 author: "John Gwynne"
-olid: OL34696101M
+isbn: "0316539929"
 category: fantasy
 status: finished
 ---

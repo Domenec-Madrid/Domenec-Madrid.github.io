@@ -1,8 +1,8 @@
 ---
 layout: book-review
-title: "El fugitivo"
+title: "The Gunslinger"
 author: "Stephen King"
-olid: OL7572318M
-category: dystopian
+olid: OL24944189M
+category: fantasy
 status: finished
 ---
