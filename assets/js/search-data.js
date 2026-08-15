@@ -51,7 +51,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/contact/";
           },
-        },{id: "post-is-hardware-wallet-fingerprinting-even-possible",
+        },{id: "post-teaching-a-bitcoin-wallet-to-trust-the-right-coins",
+        
+          title: "Teaching a Bitcoin Wallet to Trust the Right Coins",
+        
+        description: "My Summer of Bitcoin work on BDK&#39;s balance API — why a wallet should decide which unconfirmed coins to trust by looking at where the money came from, not at where it landed.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/bdk-wallet-balance-api/";
+          
+        },
+      },{id: "post-is-hardware-wallet-fingerprinting-even-possible",
         
           title: "Is Hardware Wallet Fingerprinting Even Possible?",
         
@@ -101,6 +112,9 @@ ninja.data = [{
           description: "",
           section: "News",},{id: "news-currently-deep-into-hardware-wallet-fingerprinting-research-if-you-re-curious-about-what-it-means-for-bitcoin-privacy-check-out-my-latest-blog-post",
           title: 'Currently deep into hardware wallet fingerprinting research 🔍. If you’re curious about what...',
+          description: "",
+          section: "News",},{id: "news-accepted-into-summer-of-bitcoin-️-working-on-the-balance-api-of-bdk-wallet-i-wrote-about-it-in-teaching-a-bitcoin-wallet-to-trust-the-right-coins",
+          title: 'Accepted into Summer of Bitcoin ☀️, working on the balance API of bdk_wallet....',
           description: "",
           section: "News",},{id: "projects-analysis-of-covert-nonce-channel-attacks-on-bitcoin-hardware-wallets",
           title: 'Analysis of Covert-Nonce Channel Attacks on Bitcoin Hardware Wallets',
