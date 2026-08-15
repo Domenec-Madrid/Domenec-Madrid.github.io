@@ -4,10 +4,17 @@
 
 @use "variables" as v;
 
+// The page colour lives on `html` rather than `body` so that the mountain
+// backdrop, which sits at z-index -1 inside `body`, is not painted over by the
+// body's own background. See _mountains.scss.
+html {
+  background-color: var(--global-bg-color);
+}
+
 body {
   padding-bottom: 70px;
   color: var(--global-text-color);
-  background-color: var(--global-bg-color);
+  background-color: transparent;
 
   h1,
   h2,

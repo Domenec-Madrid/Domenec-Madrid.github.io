@@ -1,0 +1,112 @@
+/*******************************************************************************
+ * Animated mountain backdrop
+ *
+ * Four silhouette layers pinned to the bottom of the viewport, each drifting
+ * sideways at its own speed so the nearer ridges outrun the distant ones and
+ * the range reads as parallax depth.
+ *
+ * Each layer is twice the viewport wide and carries a mask that tiles exactly
+ * twice across it. Sliding the layer by half its own width therefore lands on
+ * a copy of where it started, so the loop is seamless with no visible jump.
+ *
+ * The silhouettes are masks rather than images: the shape comes from the SVG
+ * and the colour from a theme variable, which is what lets the same markup
+ * serve both light and dark mode.
+ ******************************************************************************/
+
+.mountains {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 45vh;
+  overflow: hidden;
+  /* Sits behind everything. Relies on `body` being transparent and the page
+     colour living on `html`, otherwise the body background would cover it. */
+  z-index: -1;
+  pointer-events: none;
+  /* Fade the range out towards its top so it melts into the page instead of
+     ending on a hard horizontal edge. */
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 100%);
+}
+
+.mountain-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  mask-repeat: repeat-x;
+  -webkit-mask-repeat: repeat-x;
+  mask-position: bottom left;
+  -webkit-mask-position: bottom left;
+  /* One tile spans half the layer, i.e. exactly one viewport width. */
+  mask-size: 50% 100%;
+  -webkit-mask-size: 50% 100%;
+  animation: mountain-drift linear infinite;
+  will-change: transform;
+}
+
+/* Farthest ridge: highest peaks, palest, slowest. */
+.mountain-layer--1 {
+  background-color: var(--global-mountain-color-1);
+  animation-duration: 240s;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 160 L120 90 L240 140 L380 70 L520 130 L660 85 L800 145 L940 95 L1080 140 L1200 160 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 160 L120 90 L240 140 L380 70 L520 130 L660 85 L800 145 L940 95 L1080 140 L1200 160 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+}
+
+.mountain-layer--2 {
+  background-color: var(--global-mountain-color-2);
+  animation-duration: 175s;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 200 L150 140 L300 190 L450 120 L600 185 L750 135 L900 195 L1050 145 L1200 200 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 200 L150 140 L300 190 L450 120 L600 185 L750 135 L900 195 L1050 145 L1200 200 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+}
+
+.mountain-layer--3 {
+  background-color: var(--global-mountain-color-3);
+  animation-duration: 125s;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 250 L200 190 L400 245 L600 180 L800 250 L1000 200 L1200 250 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 250 L200 190 L400 245 L600 180 L800 250 L1000 200 L1200 250 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+}
+
+/* Nearest ridge: lowest, deepest colour, quickest. */
+.mountain-layer--4 {
+  background-color: var(--global-mountain-color-4);
+  animation-duration: 90s;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 290 L250 250 L500 292 L750 245 L1000 285 L1200 290 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath d='M0 290 L250 250 L500 292 L750 245 L1000 285 L1200 290 L1200 320 L0 320 Z' fill='%23000'/%3E%3C/svg%3E");
+}
+
+@keyframes mountain-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Shorter range on phones, where 45vh would eat most of the screen. */
+@media (max-width: 768px) {
+  .mountains {
+    height: 30vh;
+  }
+}
+
+/* Movement is decoration, not information: hold the range still when the
+   reader has asked the system for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .mountain-layer {
+    animation: none;
+  }
+}
+
+/* Without mask support every layer would paint as a solid green slab across
+   the page, so hide the whole thing rather than wreck the background. */
+@supports not ((mask-image: linear-gradient(#000, #000)) or (-webkit-mask-image: linear-gradient(#000, #000))) {
+  .mountains {
+    display: none;
+  }
+}

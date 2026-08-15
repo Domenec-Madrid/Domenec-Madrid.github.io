@@ -30,6 +30,13 @@
   --global-newsletter-bg-color: #{v.$white-color};
   --global-newsletter-text-color: #{v.$black-color};
 
+  // Mountain backdrop, from the farthest ridge to the nearest. Kept low in
+  // contrast against the page background so it never competes with the text.
+  --global-mountain-color-1: #eaf2e7;
+  --global-mountain-color-2: #dcebd7;
+  --global-mountain-color-3: #cbe2c4;
+  --global-mountain-color-4: #b9d8b0;
+
   --global-tip-block: #42b983;
   --global-tip-block-bg: #e2f5ec;
   --global-tip-block-text: #215d42;
@@ -98,6 +105,13 @@ html[data-theme="dark"] {
   --global-back-to-top-text-color: #{v.$black-color};
   --global-newsletter-bg-color: #{v.$grey-color-light};
   --global-newsletter-text-color: #{v.$grey-color-dark};
+
+  // Dark counterparts: deep greens that lift just enough off the dark page to
+  // suggest the ridgeline without glowing.
+  --global-mountain-color-1: #1d2822;
+  --global-mountain-color-2: #223028;
+  --global-mountain-color-3: #28392e;
+  --global-mountain-color-4: #2f4335;
 
   --global-tip-block: #42b983;
   --global-tip-block-bg: #215d42;
