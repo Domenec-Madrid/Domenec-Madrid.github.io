@@ -9,14 +9,7 @@ ninja.data = [{
     handler: () => {
       window.location.href = "/";
     },
-  },{id: "nav-books",
-          title: "Books",
-          description: "",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/books/";
-          },
-        },{id: "nav-blog",
+  },{id: "nav-blog",
           title: "Blog",
           description: "",
           section: "Navigation",
@@ -50,6 +43,13 @@ ninja.data = [{
           section: "Navigation",
           handler: () => {
             window.location.href = "/contact/";
+          },
+        },{id: "nav-books",
+          title: "Books",
+          description: "Some of what I&#39;ve been reading.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/books/";
           },
         },{id: "post-teaching-a-bitcoin-wallet-to-trust-the-right-coins",
         
@@ -95,7 +95,117 @@ ninja.data = [{
             window.location.href = "/blog/2025/byom/";
           
         },
-      },{id: "news-i-ve-been-accepted-to-the-b40s-residency-in-florianópolis-a-residency-where-a-bunch-of-devs-of-different-levels-come-together-to-learn-and-develop-bitcoin-stuff-learn-a-little-bit-more-about-it",
+      },{id: "books-el-amuleto-de-samarkanda",
+          title: 'El amuleto de Samarkanda',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/amuleto-samarkanda/";
+            },},{id: "books-the-bands-of-mourning",
+          title: 'The Bands of Mourning',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/bands-of-mourning/";
+            },},{id: "books-carrie",
+          title: 'Carrie',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/carrie/";
+            },},{id: "books-misterio-del-diablo-danzante",
+          title: 'Misterio del diablo danzante',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/dancing-devil/";
+            },},{id: "books-el-alquimista",
+          title: 'El alquimista',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/el-alquimista/";
+            },},{id: "books-el-fugitivo",
+          title: 'El fugitivo',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/el-fugitivo/";
+            },},{id: "books-el-pistolero",
+          title: 'El pistolero',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/el-pistolero/";
+            },},{id: "books-el-visitante",
+          title: 'El visitante',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/el-visitante/";
+            },},{id: "books-el-hambre-de-los-dioses",
+          title: 'El hambre de los dioses',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/hambre-de-los-dioses/";
+            },},{id: "books-la-larga-marcha",
+          title: 'La larga marcha',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/la-larga-marcha/";
+            },},{id: "books-metamorfosis",
+          title: 'Metamorfosis',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/metamorfosis/";
+            },},{id: "books-misery",
+          title: 'Misery',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/misery/";
+            },},{id: "books-rich-dad-poor-dad",
+          title: 'Rich Dad Poor Dad',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/rich-dad-poor-dad/";
+            },},{id: "books-secret-history",
+          title: 'Secret History',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/secret-history/";
+            },},{id: "books-shadows-of-self",
+          title: 'Shadows of Self',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/shadows-of-self/";
+            },},{id: "books-la-sombra-de-los-dioses",
+          title: 'La sombra de los dioses',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/sombra-de-los-dioses/";
+            },},{id: "books-the-alloy-of-law",
+          title: 'The Alloy of Law',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-alloy-of-law/";
+            },},{id: "books-the-eleventh-metal",
+          title: 'The Eleventh Metal',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-eleventh-metal/";
+            },},{id: "books-mistborn-the-final-empire",
+          title: 'Mistborn: The Final Empire',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-final-empire/";
+            },},{id: "books-the-hero-of-ages",
+          title: 'The Hero of Ages',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-hero-of-ages/";
+            },},{id: "books-the-lost-metal",
+          title: 'The Lost Metal',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-lost-metal/";
+            },},{id: "books-the-well-of-ascension",
+          title: 'The Well of Ascension',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/well-of-ascension/";
+            },},{id: "news-i-ve-been-accepted-to-the-b40s-residency-in-florianópolis-a-residency-where-a-bunch-of-devs-of-different-levels-come-together-to-learn-and-develop-bitcoin-stuff-learn-a-little-bit-more-about-it",
           title: 'I’ve been accepted to the B40S residency in Florianópolis 🎉. A residency where...',
           description: "",
           section: "News",},{id: "news-i-started-working-as-an-adjunct-professor-at-uab-in-the-computer-networks-course-labs-additionally-i-began-supervising-4-bachelor-thesis-on-topics-related-to-bitcoin-hacking-privacy-and-artificial-intelligence",
@@ -116,19 +226,27 @@ ninja.data = [{
           section: "News",},{id: "news-accepted-into-summer-of-bitcoin-️-working-on-the-balance-api-of-bdk-wallet-i-wrote-about-it-in-teaching-a-bitcoin-wallet-to-trust-the-right-coins",
           title: 'Accepted into Summer of Bitcoin ☀️, working on the balance API of bdk_wallet....',
           description: "",
-          section: "News",},{id: "projects-analysis-of-covert-nonce-channel-attacks-on-bitcoin-hardware-wallets",
+          section: "News",},{id: "projects-bdk-balance-api",
+          title: 'BDK Balance API',
+          description: "Summer of Bitcoin work on how a wallet decides which coins to trust",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/bdk-balance-api/";
+            },},{id: "projects-btc-labnet",
+          title: 'BTC-Labnet',
+          description: "A fully dockerized parallel Bitcoin mainnet for research",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/btc-labnet/";
+            },},{id: "projects-hardware-wallet-fingerprinting",
+          title: 'Hardware Wallet Fingerprinting',
+          description: "Can a Bitcoin signature reveal which device produced it?",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/hww-fingerprinting/";
+            },},{id: "projects-analysis-of-covert-nonce-channel-attacks-on-bitcoin-hardware-wallets",
           title: 'Analysis of Covert-Nonce Channel Attacks on Bitcoin Hardware Wallets',
           description: "Master&#39;s Thesis on Bitcoin Hardware Wallet Security",
           section: "Projects",handler: () => {
               window.location.href = "/projects/tfm/";
             },},{
-        id: 'social-cv',
-        title: 'CV',
-        section: 'Socials',
-        handler: () => {
-          window.open("/assets/pdf/Domenec_Madrid_CV.pdf", "_blank");
-        },
-      },{
         id: 'social-email',
         title: 'email',
         section: 'Socials',
@@ -141,6 +259,20 @@ ninja.data = [{
         section: 'Socials',
         handler: () => {
           window.open("/feed.xml", "_blank");
+        },
+      },{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/Dmenec", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/domènec-madrid", "_blank");
         },
       },{
       id: 'light-theme',
