@@ -77,6 +77,24 @@
     }
   }
 
+  // The active link is rendered bolder, which makes it wider than the same
+  // label at its normal weight. Since the navbar is right-aligned, that extra
+  // width pushes every item to its left sideways, so the menu appears to
+  // reshuffle as you move between pages. Reserve the bold width on every link
+  // up front (zero-height, invisible copy of the label) so the item keeps the
+  // same size whether or not it is the active one.
+  // Excludes .dropdown-toggle, where ::after is Bootstrap's caret.
+  .navbar-nav .nav-item > .nav-link[data-text]:not(.dropdown-toggle)::after {
+    content: attr(data-text);
+    display: block;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: bolder;
+    pointer-events: none;
+    user-select: none;
+  }
+
   .navbar-brand.social {
     padding-bottom: 0;
     padding-top: 0;
