@@ -95,11 +95,11 @@ ninja.data = [{
             window.location.href = "/blog/2025/byom/";
           
         },
-      },{id: "books-el-amuleto-de-samarkanda",
-          title: 'El amuleto de Samarkanda',
+      },{id: "books-the-amulet-of-samarkand",
+          title: 'The Amulet of Samarkand',
           description: "",
           section: "Books",handler: () => {
-              window.location.href = "/books/amuleto-samarkanda/";
+              window.location.href = "/books/amulet-of-samarkand/";
             },},{id: "books-the-bands-of-mourning",
           title: 'The Bands of Mourning',
           description: "",
@@ -110,46 +110,16 @@ ninja.data = [{
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/carrie/";
-            },},{id: "books-misterio-del-diablo-danzante",
-          title: 'Misterio del diablo danzante',
+            },},{id: "books-the-mystery-of-the-dancing-devil",
+          title: 'The Mystery of the Dancing Devil',
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/dancing-devil/";
-            },},{id: "books-el-alquimista",
-          title: 'El alquimista',
+            },},{id: "books-the-hunger-of-the-gods",
+          title: 'The Hunger of the Gods',
           description: "",
           section: "Books",handler: () => {
-              window.location.href = "/books/el-alquimista/";
-            },},{id: "books-el-fugitivo",
-          title: 'El fugitivo',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/el-fugitivo/";
-            },},{id: "books-el-pistolero",
-          title: 'El pistolero',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/el-pistolero/";
-            },},{id: "books-el-visitante",
-          title: 'El visitante',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/el-visitante/";
-            },},{id: "books-el-hambre-de-los-dioses",
-          title: 'El hambre de los dioses',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/hambre-de-los-dioses/";
-            },},{id: "books-la-larga-marcha",
-          title: 'La larga marcha',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/la-larga-marcha/";
-            },},{id: "books-metamorfosis",
-          title: 'Metamorfosis',
-          description: "",
-          section: "Books",handler: () => {
-              window.location.href = "/books/metamorfosis/";
+              window.location.href = "/books/hunger-of-the-gods/";
             },},{id: "books-misery",
           title: 'Misery',
           description: "",
@@ -165,16 +135,21 @@ ninja.data = [{
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/secret-history/";
+            },},{id: "books-the-shadow-of-the-gods",
+          title: 'The Shadow of the Gods',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/shadow-of-the-gods/";
             },},{id: "books-shadows-of-self",
           title: 'Shadows of Self',
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/shadows-of-self/";
-            },},{id: "books-la-sombra-de-los-dioses",
-          title: 'La sombra de los dioses',
+            },},{id: "books-the-alchemist",
+          title: 'The Alchemist',
           description: "",
           section: "Books",handler: () => {
-              window.location.href = "/books/sombra-de-los-dioses/";
+              window.location.href = "/books/the-alchemist/";
             },},{id: "books-the-alloy-of-law",
           title: 'The Alloy of Law',
           description: "",
@@ -190,16 +165,41 @@ ninja.data = [{
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/the-final-empire/";
+            },},{id: "books-the-gunslinger",
+          title: 'The Gunslinger',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-gunslinger/";
             },},{id: "books-the-hero-of-ages",
           title: 'The Hero of Ages',
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/the-hero-of-ages/";
+            },},{id: "books-the-long-walk",
+          title: 'The Long Walk',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-long-walk/";
             },},{id: "books-the-lost-metal",
           title: 'The Lost Metal',
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/the-lost-metal/";
+            },},{id: "books-the-metamorphosis",
+          title: 'The Metamorphosis',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-metamorphosis/";
+            },},{id: "books-the-outsider",
+          title: 'The Outsider',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-outsider/";
+            },},{id: "books-the-running-man",
+          title: 'The Running Man',
+          description: "",
+          section: "Books",handler: () => {
+              window.location.href = "/books/the-running-man/";
             },},{id: "books-the-well-of-ascension",
           title: 'The Well of Ascension',
           description: "",
