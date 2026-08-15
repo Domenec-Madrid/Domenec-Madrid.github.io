@@ -223,7 +223,7 @@ ninja.data = [{
           section: "News",},{id: "news-currently-deep-into-hardware-wallet-fingerprinting-research-if-you-re-curious-about-what-it-means-for-bitcoin-privacy-check-out-my-latest-blog-post",
           title: 'Currently deep into hardware wallet fingerprinting research 🔍. If you’re curious about what...',
           description: "",
-          section: "News",},{id: "news-accepted-into-summer-of-bitcoin-️-working-on-the-balance-api-of-bdk-wallet-i-wrote-about-it-in-teaching-a-bitcoin-wallet-to-trust-the-right-coins",
+          section: "News",},{id: "news-accepted-into-summer-of-bitcoin-️-working-on-the-balance-api-of-bdk-wallet-i-wrote-about-it-in-modifying-the-bdk-wallet-balance-api-for-my-summer-of-bitcoin-project",
           title: 'Accepted into Summer of Bitcoin ☀️, working on the balance API of bdk_wallet....',
           description: "",
           section: "News",},{id: "projects-bdk-balance-api",
