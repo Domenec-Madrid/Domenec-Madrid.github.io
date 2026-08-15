@@ -1,10 +1,10 @@
 # Social media links and usernames
 # Displayed in the order defined here
 # See: https://github.com/george-gca/jekyll-socials
-cv_pdf: /assets/pdf/Domenec_Madrid_CV.pdf
+# cv_pdf: /assets/pdf/Domenec_Madrid_CV.pdf  # re-enable once the PDF actually exists (see render-cv workflow)
 email: Domenec.Madrid@uab.cat
 rss_icon: true
+github_username: Dmenec
+linkedin_username: domènec-madrid
 # scholar_userid:   # Google Scholar ID
 # inspirehep_id:    # Inspire HEP author ID
-# github_username: Dmenec
-# linkedin_username:

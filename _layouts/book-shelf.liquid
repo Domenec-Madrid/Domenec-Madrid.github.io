@@ -6,44 +6,55 @@ layout: page
 {% if page.collection and page.collection.size > 0 %}
   {% assign collection = site[page.collection] %}
   {% if collection and collection.size > 0 %}
-    {% for item in collection reversed %}
-      {% assign current_year = item.started | date: '%Y' %}
-      {% if current_year != year %}
-        {% unless forloop.first %}
-          </ul>
-        {% endunless %}
-        <h1 id="y{{item.started | date: "%Y"}}">
-          <a href="{{ current_year | prepend: '/books/' | relative_url }}">{{ current_year }}</a>
-        </h1>
-        <ul>
-          {% assign year = current_year %}
+    {% comment %}
+      Group the shelf by category. Categories listed in the page's `display_categories`
+      are rendered first and in that order; anything else falls in afterwards. Empty
+      categories are skipped, so a category only shows up once it has books in it.
+    {% endcomment %}
+    {% assign present = collection | map: 'category' | compact | uniq %}
+    {% assign ordered = '' | split: '' %}
+    {% for category in page.display_categories %}
+      {% if present contains category %}
+        {% assign one = category | split: '||' %}
+        {% assign ordered = ordered | concat: one %}
       {% endif %}
+    {% endfor %}
+    {% for category in present %}
+      {% unless page.display_categories contains category %}
+        {% assign one = category | split: '||' %}
+        {% assign ordered = ordered | concat: one %}
+      {% endunless %}
+    {% endfor %}
 
-      <figure class="cover">
-        <a class="cover-link" href="{{ item.url | relative_url }}">
-          {% if item.cover %}
-            <img alt="{{ item.title }} cover" src="{{ item.cover | prepend: page.covers | relative_url }}" style="height:200px">
-          {% elsif item.olid %}
-            <img alt="{{ item.title }} cover" src="https://covers.openlibrary.org/b/olid/{{ item.olid }}-L.jpg?default=false" style="height:200px">
-          {% elsif item.isbn %}
-            <img alt="{{ item.title }} cover" src="https://covers.openlibrary.org/b/isbn/{{ item.isbn }}-L.jpg?default=false" style="height:200px">
-          {% endif %}
-          {% if item.status %}
-            {% assign statuses = 'abandoned,finished,interested,paused,queued,reading,reread' | split: ',' %}
-            {% assign status = item.status | downcase | strip %}
-            {% if statuses contains status %}
-              <figcaption class="{{ status | downcase }}">{{ status | upcase }}</figcaption>
-            {% else %}
-              <figcaption class="uncategorized">UNCATEGORIZED</figcaption>
-            {% endif %}
-          {% else %}
-            <figcaption class="uncategorized">UNCATEGORIZED</figcaption>
-          {% endif %}
-        </a>
-      </figure>
-      {% if forloop.last %}
-        </ul>
-      {% endif %}
+    {% for category in ordered %}
+      {% assign items = collection | where: 'category', category | sort: 'title' %}
+      <h1 id="{{ category | slugify }}">{{ category | capitalize }}</h1>
+      <ul>
+        {% for item in items %}
+          <figure class="cover">
+            <a class="cover-link" href="{{ item.url | relative_url }}">
+              {% if item.cover %}
+                <img alt="{{ item.title }} cover" src="{{ item.cover | prepend: page.covers | relative_url }}" style="height:200px">
+              {% elsif item.olid %}
+                <img alt="{{ item.title }} cover" src="https://covers.openlibrary.org/b/olid/{{ item.olid }}-L.jpg?default=false" style="height:200px">
+              {% elsif item.isbn %}
+                <img alt="{{ item.title }} cover" src="https://covers.openlibrary.org/b/isbn/{{ item.isbn }}-L.jpg?default=false" style="height:200px">
+              {% endif %}
+              {% if item.status %}
+                {% assign statuses = 'abandoned,finished,interested,paused,queued,reading,reread' | split: ',' %}
+                {% assign status = item.status | downcase | strip %}
+                {% if statuses contains status %}
+                  <figcaption class="{{ status | downcase }}">{{ status | upcase }}</figcaption>
+                {% else %}
+                  <figcaption class="uncategorized">UNCATEGORIZED</figcaption>
+                {% endif %}
+              {% else %}
+                <figcaption class="uncategorized">UNCATEGORIZED</figcaption>
+              {% endif %}
+            </a>
+          </figure>
+        {% endfor %}
+      </ul>
     {% endfor %}
   {% endif %}
 {% endif %}

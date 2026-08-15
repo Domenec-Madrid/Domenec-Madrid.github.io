@@ -27,9 +27,9 @@ latest_posts:
 
 I’m **Domènec**, a **Computer Science Engineer** graduated from the _Autonomous University of Barcelona_. Later on, I completed a Master’s degree in **Cybersecurity and Privacy** at _Universitat Oberta de Catalunya_.
 
-If everything goes as planned, I’ll be starting my **PhD next September**, continuing a research path that I’ve been shaping over the past years at _UAB_. In parallel, I teach lab sessions for the **Computer Networks** course in the Computer Science degree, and I’m currently supervising four Bachelor’s Thesis.
+I’m about to start my **PhD** at _UAB_, continuing a research path that I’ve been shaping over the past years there. In parallel, I teach lab sessions for the **Computer Networks** course in the Computer Science degree, and I’m currently supervising four Bachelor’s Thesis.
 
-My deep interest in **cryptography**, **privacy**, and **distributed systems** naturally led me into the world of **Bitcoin**. I’ve worked on projects ranging from building a parallel Bitcoin mainnet environment in Docker for realistic testing, to hardware‑wallet fingerprinting, to analyzing anti‑exfiltration protocols and other privacy‑oriented mechanisms.  
+My deep interest in **cryptography**, **privacy**, and **distributed systems** naturally led me into the world of **Bitcoin**. I’ve worked on projects ranging from building a parallel Bitcoin mainnet environment in Docker for realistic testing, to hardware‑wallet fingerprinting, to analyzing anti‑exfiltration protocols and other privacy‑oriented mechanisms. This summer I’ve been contributing to [BDK](https://bitcoindevkit.org) through **Summer of Bitcoin**.  
 <sub>_If you're curious about any of this, you can explore some of my recent work in my [blog :)](https://domenec-madrid.github.io/blog)_</sub>
 
 Outside the academic and technical bubble, I’m usually out hiking with my dog. I like staying in constant learning mode, so if you ever want to reach out or comment on something, don’t hesitate to [contact me!](https://domenec-madrid.github.io/contact).
