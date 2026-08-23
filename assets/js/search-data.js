@@ -51,7 +51,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/books/";
           },
-        },{id: "post-modifying-the-bdk-wallet-balance-api-for-my-summer-of-bitcoin-project",
+        },{id: "post-what-grinding-has-actually-saved-on-chain",
+        
+          title: "What Grinding Has Actually Saved on Chain",
+        
+        description: "Low-r grinding saves a byte per signature. I did the accounting over every ECDSA signature ever mined, to see what that adds up to and how much is still being left on the table.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/grinding-bytes/";
+          
+        },
+      },{id: "post-modifying-the-bdk-wallet-balance-api-for-my-summer-of-bitcoin-project",
         
           title: "Modifying the bdk_wallet Balance API for My Summer of Bitcoin Project",
         
