@@ -82,8 +82,18 @@
     return { r: r, s: s, rLen: rLen, tries: tries, sigLen: 6 + rLen + 32 + 1 };
   }
 
+  // PurgeCSS scans the built site for literal class names, so these have to be
+  // spelled out in full here. Building them as 'demo-byte--' + key would leave
+  // the rules unreferenced and they would be stripped from the stylesheet.
+  var BYTE_CLASS = {
+    r: 'demo-byte--r',
+    s: 'demo-byte--s',
+    pad: 'demo-byte--pad',
+    dropped: 'demo-byte--dropped'
+  };
+
   function cell(hex, cls, title) {
-    return '<span class="demo-byte' + (cls ? ' demo-byte--' + cls : '') +
+    return '<span class="demo-byte' + (cls ? ' ' + BYTE_CLASS[cls] : '') +
       '" title="' + title + '">' + hex + '</span>';
   }
 
@@ -110,9 +120,8 @@
 
   var NOTES = {
     33: '<code>r[0] &ge; 0x80</code>. DER reads integers as two&rsquo;s complement, so the encoder ' +
-        'prepends <code>0x00</code> to stop it being negative. 72 bytes, one attempt, no work done.',
-    32: '<code>r &lt; 2<sup>255</sup></code>, so the high bit is clear and no padding byte is needed. ' +
-        '71 bytes for a mean of two signing attempts. This is what Core has done since v0.17.0.',
+        'prepends <code>0x00</code> to stop it being negative.',
+    32: '<code>r &lt; 2<sup>255</sup></code>, so the high bit is clear and no padding byte is needed. ',
     31: '<code>r &lt; 2<sup>248</sup></code>, so the top byte is <code>0x00</code> and DER drops it ' +
         'outright. 70 bytes, but the mean cost jumps to ~256 attempts and a wallet emitting these ' +
         'would be the loudest fingerprint on the chain.'
