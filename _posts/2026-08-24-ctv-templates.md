@@ -5,6 +5,7 @@ date: 2026-08-24
 description: OP_CHECKTEMPLATEVERIFY hashes eight fields of the spending transaction. The interesting part is the ones it leaves out, because the same omission gives covenants their best trick and their worst footgun.
 tags: ["Bitcoin", "Covenants", "CTV", "CSFS", "Script", "Consensus"]
 categories:
+published: false # unreviewed draft: remove this line to publish
 ---
 
 Bitcoin Script can say *who* may spend a coin, and *when*. It cannot say *where the money goes next*. Every construction that needs that, vaults, payment pools, channel factories, has to fake it with pre-signed transactions: generate a key, sign the future spends in advance, then delete the key and pray you deleted it properly. The security of the whole thing rests on a deletion nobody can prove happened.
