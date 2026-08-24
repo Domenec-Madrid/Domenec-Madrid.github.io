@@ -254,12 +254,6 @@ That missed week is the number I keep coming back to. Counting only $r$, it is *
 
 It is not history either. High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in August 2026 low-$r$ is at 68.3%, so roughly **one signature in three still isn't ground**.
 
-That share also says how much software grinds at all, which is the bleaker number. A wallet that grinds emits a low $r$ essentially every time; one that doesn't lands there half the time by luck. So if $p$ is the share of signatures coming from grinders:
-
-$$0.682 = p + \tfrac{1}{2}(1 - p) \implies p = 0.364$$
-
-Only about **36% of signatures come from software that grinds**. The remaining two thirds are not wallets missing a byte here and there, they are wallets that never grind at all. Even at the December 2022 peak of 70.2%, grinders were barely over 40%.
-
 Some of that is unfixable: old software, exotic signers, HSMs that will not re-sign. The rest is wallets that could ship a four-line change.
 
 ## The grind nobody does
@@ -438,6 +432,12 @@ That column splits the history in three.
 **2014–2018 I cannot explain.** About 6 MiB over five years, but sitting at 139 to 363 $\sigma$, so it is not luck either, and it starts four years before v0.17.0. Something was already biased towards low $r$ before grinding shipped. Maybe a big service with its own signing code, maybe the signatures are less independent than a fair-coin model needs.
 
 I would rather flag that than explain it away. What I will defend is the split: **98.2% of the 322 MiB comes from 2019 onward**, once v0.17.0 was out.
+
+The same subtraction answers the question about wallets rather than bytes. A wallet that grinds emits a low $r$ essentially every time; one that doesn't lands there half the time by luck. So with low-$r$ at 68.3% today, the share $p$ of signatures coming from grinders is:
+
+$$0.683 = p + \tfrac{1}{2}(1 - p) \implies p \approx 0.36$$
+
+Only about **36% of signatures come from software that grinds**. The remaining two thirds are not wallets missing a byte here and there, they are wallets that never grind at all. Even at the December 2022 peak of 70.2%, grinders were barely over 40%.
 
 ## Run it yourself
 
