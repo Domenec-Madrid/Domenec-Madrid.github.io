@@ -51,7 +51,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/books/";
           },
-        },{id: "post-what-grinding-has-actually-saved-on-chain",
+        },{id: "post-what-ctv-refuses-to-look-at",
+        
+          title: "What CTV Refuses to Look At",
+        
+        description: "OP_CHECKTEMPLATEVERIFY hashes eight fields of the spending transaction. The interesting part is the ones it leaves out, because the same omission gives covenants their best trick and their worst footgun.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/ctv-templates/";
+          
+        },
+      },{id: "post-what-grinding-has-actually-saved-on-chain",
         
           title: "What Grinding Has Actually Saved on Chain",
         
