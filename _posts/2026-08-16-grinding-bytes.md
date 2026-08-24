@@ -61,15 +61,15 @@ Half of the saved ones are luck, not grinding, since $r$ comes out low half the 
   --viz-grid: var(--global-divider-color);
   --viz-base: #8a8a8a;
   --viz-ann: #b0b0b0;
-  --viz-s1: #2a78d6;
-  --viz-s2: #eb6834;
+  --viz-s1: var(--demo-orange);
+  --viz-s2: var(--demo-green);
   margin: 1.5rem 0;
 }
 html[data-theme="dark"] .grind-chart {
   --viz-base: #7d7d7d;
   --viz-ann: #5c5c5c;
-  --viz-s1: #3987e5;
-  --viz-s2: #d95926;
+  --viz-s1: var(--demo-orange);
+  --viz-s2: var(--demo-green);
 }
 .grind-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
 .grind-plot { position: relative; }
@@ -263,7 +263,7 @@ There is one more byte down there. Grind until $r < 2^{248}$, so the top byte of
 
 Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emitting 70-byte ECDSA signatures would be the loudest fingerprint on the chain. The byte you save is not always worth the identity you spend.
 
-<div class="card my-4 border" id="ecdsa-grinding-demo">
+<div class="demo-card" id="ecdsa-grinding-demo">
   <div class="card-body">
     <h6 class="card-title fw-bold mb-1">ECDSA signature grinding — what each byte costs</h6>
     <p class="card-text text-muted mb-3" style="font-size:0.85rem">
@@ -271,23 +271,23 @@ Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emi
     </p>
     
     <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
-      <button class="btn btn-sm btn-outline-primary" id="grind-btn-std">Standard signature (1 try)</button>
-      <button class="btn btn-sm btn-primary" id="grind-btn-lowr">Grind low-<em>r</em> (71 B, ~2 tries)</button>
-      <button class="btn btn-sm btn-warning" id="grind-btn-extreme">Extreme grind (70 B, ~256 tries)</button>
+      <button class="demo-btn" id="grind-btn-std">Standard signature (1 try)</button>
+      <button class="demo-btn demo-btn--primary" id="grind-btn-lowr">Grind low-<em>r</em> (71 B, ~2 tries)</button>
+      <button class="demo-btn demo-btn--extreme" id="grind-btn-extreme">Extreme grind (70 B, ~256 tries)</button>
     </div>
 
     <div id="grind-output" style="display:none">
       <div class="d-flex gap-3 mb-3 flex-wrap">
         <div class="text-center">
-          <div id="grind-badge-len" class="badge fs-6">?? bytes</div>
+          <div id="grind-badge-len" class="demo-badge">?? bytes</div>
           <div class="small text-muted mt-1">Signature size</div>
         </div>
         <div class="text-center">
-          <div id="grind-badge-attempts" class="badge bg-secondary fs-6">1 try</div>
+          <div id="grind-badge-attempts" class="demo-badge">1 try</div>
           <div class="small text-muted mt-1">Grinding rounds</div>
         </div>
         <div class="text-center">
-          <div id="grind-badge-privacy" class="badge fs-6">Normal</div>
+          <div id="grind-badge-privacy" class="demo-badge">Normal</div>
           <div class="small text-muted mt-1">On-chain fingerprint</div>
         </div>
       </div>
@@ -296,16 +296,16 @@ Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emi
         <div class="small fw-bold mb-1">DER structure, byte by byte</div>
         <div id="grind-der-viz" class="font-monospace" style="word-break:break-all;line-height:2.1;font-size:0.78rem"></div>
         <div class="mt-2 d-flex flex-wrap gap-1" style="font-size:0.75rem">
-          <span class="badge" style="background:#6c757d">DER structure</span>
-          <span class="badge" style="background:#0d6efd">r bytes</span>
-          <span class="badge" style="background:#dc3545">0x00 padding (r &#8805; 0x80)</span>
-          <span class="badge" style="background:#fd7e14">r[0] dropped by DER</span>
-          <span class="badge" style="background:#198754">s bytes (low-s)</span>
-          <span class="badge" style="background:#6f42c1">SIGHASH</span>
+          <span class="demo-badge" style="background:var(--demo-stone)">DER structure</span>
+          <span class="demo-badge" style="background:var(--demo-orange)">r bytes</span>
+          <span class="demo-badge" style="background:var(--demo-brick)">0x00 padding (r &#8805; 0x80)</span>
+          <span class="demo-badge" style="background:var(--demo-amber)">r[0] dropped by DER</span>
+          <span class="demo-badge" style="background:var(--demo-green)">s bytes (low-s)</span>
+          <span class="demo-badge" style="background:var(--demo-dusk)">SIGHASH</span>
         </div>
       </div>
 
-      <div id="grind-explanation" class="mt-3 p-2 rounded small" style="background:rgba(0,0,0,0.03); border-left: 3px solid #6c757d;"></div>
+      <div id="grind-explanation" class="demo-note small"></div>
     </div>
   </div>
 </div>
@@ -364,9 +364,10 @@ Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emi
   }
 
   function byte(hex, title, bg, fg) {
-    fg = fg || '#fff';
-    return '<span title="' + title + '" style="display:inline-block;background:' + bg +
-      ';color:' + fg + ';padding:1px 5px;border-radius:3px;margin:1px 1px;cursor:default;font-size:0.78rem">' + hex + '</span>';
+    // Styling lives in .demo-byte (_sass/_demos.scss); only the role colour
+    // varies per byte, so that is all we set inline.
+    return '<span class="demo-byte" title="' + title + '" style="background:' + bg +
+      (fg ? ';color:' + fg : '') + '">' + hex + '</span>';
   }
 
   function renderDER(sig) {
@@ -374,33 +375,33 @@ Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emi
     const totalLen = 2 + rLen + 2 + 32;
     let h = '';
     
-    h += byte('30', 'SEQUENCE tag', '#6c757d');
-    h += byte(totalLen.toString(16).padStart(2, '0'), 'Total DER length: ' + totalLen + ' bytes', '#6c757d');
-    h += byte('02', 'INTEGER tag (r)', '#0d6efd');
-    h += byte(rLen.toString(16).padStart(2, '0'), 'r length: ' + rLen + ' bytes', '#0d6efd');
+    h += byte('30', 'SEQUENCE tag', 'var(--demo-stone)');
+    h += byte(totalLen.toString(16).padStart(2, '0'), 'Total DER length: ' + totalLen + ' bytes', 'var(--demo-stone)');
+    h += byte('02', 'INTEGER tag (r)', 'var(--demo-orange)');
+    h += byte(rLen.toString(16).padStart(2, '0'), 'r length: ' + rLen + ' bytes', 'var(--demo-orange)');
     
     if (needsPad) {
-      h += byte('00', 'DER padding: r[0] >= 0x80, so a 0x00 keeps it from reading as negative', '#dc3545');
+      h += byte('00', 'DER padding: r[0] >= 0x80, so a 0x00 keeps it from reading as negative', 'var(--demo-brick)');
       Array.from(r).forEach((b, i) => {
-        h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']', '#0d6efd');
+        h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']', 'var(--demo-orange)');
       });
     } else if (droppedTopByte) {
-      h += byte('~~', 'r[0] was 0x00, so DER drops it entirely (r < 2^248)', '#fd7e14');
+      h += byte('~~', 'r[0] was 0x00, so DER drops it entirely (r < 2^248)', 'var(--demo-amber)');
       Array.from(r.slice(1)).forEach((b, i) => {
-        h += byte(b.toString(16).padStart(2, '0'), 'r[' + (i + 1) + ']', '#0d6efd');
+        h += byte(b.toString(16).padStart(2, '0'), 'r[' + (i + 1) + ']', 'var(--demo-orange)');
       });
     } else {
       Array.from(r).forEach((b, i) => {
-        h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']', '#0d6efd');
+        h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']', 'var(--demo-orange)');
       });
     }
 
-    h += byte('02', 'INTEGER tag (s)', '#198754');
-    h += byte('20', 's length: 32 bytes (BIP-62 low-s)', '#198754');
+    h += byte('02', 'INTEGER tag (s)', 'var(--demo-green)');
+    h += byte('20', 's length: 32 bytes (BIP-62 low-s)', 'var(--demo-green)');
     Array.from(s).forEach((b, i) => {
-      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', '#198754');
+      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', 'var(--demo-green)');
     });
-    h += byte('01', 'SIGHASH_ALL', '#6f42c1');
+    h += byte('01', 'SIGHASH_ALL', 'var(--demo-dusk)');
     return h;
   }
 
@@ -414,18 +415,18 @@ Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emi
     attBadge.textContent = sig.attempts + (sig.attempts === 1 ? ' try' : ' tries');
 
     if (sig.sigLen === 70) {
-      lenBadge.className = 'badge fs-6 bg-warning text-dark';
-      privBadge.className = 'badge fs-6 bg-danger';
+      lenBadge.className = 'demo-badge demo-badge--warn';
+      privBadge.className = 'demo-badge demo-badge--bad';
       privBadge.textContent = 'Unique fingerprint';
       expDiv.innerHTML = '<strong>70 bytes, extreme grind.</strong> The top byte of $r$ came out zero ($r < 2^{248}$), so DER dropped it. That is one more witness byte saved, worth 0.25 vbytes, for ' + sig.attempts + ' signing attempts, and it makes your software stand out on the chain.';
     } else if (sig.sigLen === 71) {
-      lenBadge.className = 'badge fs-6 bg-success';
-      privBadge.className = 'badge fs-6 bg-secondary';
+      lenBadge.className = 'demo-badge demo-badge--good';
+      privBadge.className = 'demo-badge';
       privBadge.textContent = 'Common';
       expDiv.innerHTML = '<strong>71 bytes, low-r.</strong> The high bit of $r$ is clear, so there is no `0x00` padding byte. This is what a modern wallet aims for, and it takes about two attempts.';
     } else {
-      lenBadge.className = 'badge fs-6 bg-secondary';
-      privBadge.className = 'badge fs-6 bg-secondary';
+      lenBadge.className = 'demo-badge';
+      privBadge.className = 'demo-badge';
       privBadge.textContent = 'Common';
       expDiv.innerHTML = '<strong>72 bytes, no grinding.</strong> $r$ came out high, so DER needs a leading `0x00`. This is what you get half the time if you sign once and keep it.';
     }

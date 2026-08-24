@@ -1,0 +1,145 @@
+/*******************************************************************************
+ * Interactive post demos
+ *
+ * Shared palette and components for the in-post widgets (byte breakdowns,
+ * charts, signing simulators). The demos used to carry Bootstrap's default
+ * blues and purples, which fought with the site's orange-and-green mountain
+ * backdrop. Everything here is built from stone, bitcoin orange, brick, amber,
+ * forest and dusk, so a demo reads as part of the page rather than a widget
+ * dropped into it.
+ *
+ * Roles are stable across posts: r bytes are always orange, s bytes always
+ * green, the padding byte always brick.
+ ******************************************************************************/
+
+:root {
+  --demo-stone: #6f6a63;
+  --demo-orange: #d97f0c;
+  --demo-brick: #b0402c;
+  --demo-amber: #a8861f;
+  --demo-green: #2f7d4f;
+  --demo-dusk: #46655d;
+  --demo-chip-ink: #ffffff;
+  --demo-surface: rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme="dark"] {
+  --demo-stone: #8d877e;
+  --demo-orange: #e8931f;
+  --demo-brick: #c9563f;
+  --demo-amber: #c2a032;
+  --demo-green: #3f9a63;
+  --demo-dusk: #5c8177;
+  --demo-chip-ink: #16181a;
+  --demo-surface: rgba(255, 255, 255, 0.05);
+}
+
+.demo-card {
+  margin: 1.75rem 0;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 6px;
+  background-color: var(--global-card-bg-color);
+
+  // A thin ridge of bitcoin orange, echoing the backdrop.
+  border-top: 3px solid var(--demo-orange);
+}
+
+.demo-btn {
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--demo-stone);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--global-text-color);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition:
+    background-color 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+
+  &:hover {
+    border-color: var(--demo-orange);
+    color: var(--demo-orange);
+  }
+}
+
+.demo-btn--primary {
+  border-color: var(--demo-orange);
+  background: var(--demo-orange);
+  color: var(--demo-chip-ink);
+
+  &:hover {
+    background: var(--demo-amber);
+    border-color: var(--demo-amber);
+    color: var(--demo-chip-ink);
+  }
+}
+
+.demo-btn--extreme {
+  border-color: var(--demo-brick);
+  color: var(--demo-brick);
+
+  &:hover {
+    background: var(--demo-brick);
+    border-color: var(--demo-brick);
+    color: var(--demo-chip-ink);
+  }
+}
+
+.demo-badge {
+  display: inline-block;
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+  background: var(--demo-stone);
+  color: var(--demo-chip-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.demo-badge--good {
+  background: var(--demo-green);
+}
+.demo-badge--warn {
+  background: var(--demo-amber);
+}
+.demo-badge--bad {
+  background: var(--demo-brick);
+}
+.demo-badge--flat {
+  background: var(--demo-dusk);
+}
+
+/* Legend swatches above a byte breakdown. */
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+}
+
+.demo-legend .demo-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+/* Individual byte chips, emitted from the demo scripts. */
+.demo-byte {
+  display: inline-block;
+  margin: 1px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--demo-chip-ink);
+  font-size: 0.78rem;
+  cursor: default;
+}
+
+.demo-note {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.7rem;
+  border-left: 3px solid var(--demo-orange);
+  border-radius: 3px;
+  background: var(--demo-surface);
+  font-size: 0.85rem;
+}
