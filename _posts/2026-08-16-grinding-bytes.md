@@ -7,53 +7,49 @@ tags: ["Bitcoin", "Cryptography", "Signatures", "Low-r grinding", "Rust", "Block
 categories:
 ---
 
-A few months ago I wrote about [whether you can fingerprint a hardware wallet](/blog/2026/hww-fingerprinting/) from its signatures. One of the vectors was **low-$r$ grinding**: some wallets re-sign a transaction until $r$ fits in one byte less, which pins their signatures at 71 bytes instead of a coin flip between 71 and 72.
+A few months ago, I wrote about [whether you can fingerprint a hardware wallet](/blog/2026/hww-fingerprinting/)from its signatures, and I discovered that some wallet vendors implement a subtle technique to save an almost free byte on each ECDSA signature.
 
-Back then I only cared whether a device grinds. This post asks the other half of it:
+That's called **low-r grinding**. The **r** comes from one of the signature values, and **grinding** refers to repeatedly generating signatures until they manage to save that one byte.
+
+Although I'll explain how this optimization works later in this post, the first thing that came to mind when I learned about it was:
 
 **How many bytes has all that grinding actually saved?**
 
-One byte is a ridiculous unit to care about. And yet Bitcoin Core shipped a feature to save it and other wallets copied it, so either everyone is wasting their time or bytes add up.
+One byte is a ridiculously small thing to care about. Yet Bitcoin Core shipped a feature to save it, and other wallets followed suit. So either everyone is wasting their time, or maybe, as we say in Catalonia, *de mica en mica s'omple la pica* or many a little makes a mickle.
 
 Let's count them ;)
 
-## Where the byte comes from
+## Encoding and Signature Values
 
-An ECDSA signature travels DER-encoded:
+An ECDSA signature is transmitted in DER format:
 
 ```
 30 <len> 02 <len_r> <r> 02 <len_s> <s> <sighash>
 ```
 
-DER integers are signed, two's complement. If the top byte of $r$ or $s$ has its high bit set, the encoder prepends a `0x00` so the value isn't read as negative. That padding byte is what this whole post is about.
+DER integers are signed and encoded using two's complement. If the most significant bit of the first byte of $r$ or $s$ is set, the encoder prepends a `0x00` so the value isn't read as negative.
 
-A value that dodges it is *low*: $r < 2^{255}$, or $s \leq n/2$.[^threshold] Each low value saves at least one byte.[^twobytes]
+A *low value* is one for which $r < 2^{255}$, or $s \leq n/2$. Such values would save one byte in a DER encoded signature.
 
-## Two tricks that are not the same
+## How To Grind a Low Value
 
 | | how you get a low value | cost |
 | --- | --- | --- |
-| **$s$** | negate it: if $(r, s)$ is valid, so is $(r, n - s)$ | free |
+| **$s$** | negate it: if $(r, s)$ is valid, so is $(r, n - s)$ | 1 signature |
 | **$r$** | throw the nonce away and sign again | ~2 signatures |
 
-$s$ is free because both halves authorize the same thing, so a signer just keeps the one it likes. Core started doing that in [v0.9.0](https://bitcoin.org/en/release/v0.9.0) (March 2014) as a malleability fix, and [v0.10.3](https://bitcoin.org/en/release/v0.10.3) and [v0.11.1](https://bitcoin.org/en/release/v0.11.1) made high-$s$ non-standard in October 2015. The bytes were a side effect.
+$s$ is free because both halves authorize the same thing, so a signer just keeps the one it likes. Core started doing that in [v0.9.0](https://bitcoin.org/en/release/v0.9.0) (March 2014) as a malleability fix, and [v0.10.3](https://bitcoin.org/en/release/v0.10.3) and [v0.11.1](https://bitcoin.org/en/release/v0.11.1) made high-$s$ non-standard in October 2015.
 
-$r$ comes from the nonce, $r = (kG)_x \bmod n$, so you cannot negate your way to a low one. A wallet that wants it has to sign again. Core shipped that in [v0.17.0](https://bitcoin.org/en/release/v0.17.0) (October 2018).
+$r$ comes from the nonce, $r = (kG)_x \bmod n$, that implies that a wallet that wants another value has to sign again. Core shipped that in [v0.17.0](https://bitcoin.org/en/release/v0.17.0) (October 2018).
 
-That difference is the whole story of the two curves below.
+## The Accounting
 
-## The data
+[mainnet.observer](https://mainnet.observer) publishes a daily count of how many ECDSA signatures had a low or a high $r$, and the same for $s$. I read [the backend](https://github.com/0xB10C/mainnet-observer) first, to check that its thresholds are the ones that decide the padding byte. I wanted to do it by myself with an owned node, but for now I'll make the accounting with B10c data.
 
-[mainnet.observer](https://mainnet.observer) publishes a daily count of how many ECDSA signatures had a low or a high $r$, and the same for $s$. I read [the backend](https://github.com/0xB10C/mainnet-observer) first, to check that its thresholds are the ones that decide the padding byte.
+To do the accounting I wrote a small [tool](https://github.com/Dmenec/bytes-saved-by-grinding-signatures) that pulls those series, caches them and does the accounting. It reports two numbers:
 
-Then I wrote a small Rust tool that pulls those series, caches them and does the accounting. It reports two numbers:
-
-- **saved** — every low-$r$ and low-$s$ signature, one byte each.
-- **missed** — every high-$r$ and high-$s$ signature: bytes that went on the chain and did not have to.
-
-Half of the saved ones are luck, not grinding, since $r$ comes out low half the time on its own. The byte is saved either way, so it stays in the count and I split it out at the end.
-
-## Charts
+- **saved** -> every low-$r$ and low-$s$ signature existing on chain.
+- **missed** -> every high-$r$ and high-$s$ signature existing on chain.
 
 <style>
 .grind-chart {
@@ -177,7 +173,9 @@ html[data-theme="dark"] .grind-chart {
 
 **Low-$r$** is flat at 50% for nine years, bends in **October 2018** when v0.17.0 shipped, and peaks at **70.2% in December 2022**. Then it sags, and has been drifting between 60% and 68% ever since.
 
-I could not work out what drove the sag. My first guess was the input mix, since native P2WPKH went from 40% of all inputs in late 2022 to over 70% today. But that share kept climbing through 2026 while low-$r$ recovered from a low of 59.2% in September 2025 to 68.3% today, so the mix cannot be the story. Answering it properly needs per-signer data, which daily aggregates do not have. If you know, [get in touch](https://domenec-madrid.github.io/contact/).
+I could not work out what drove the sag. My first guess was the input mix, since native P2WPKH went from 40% of all inputs in late 2022 to more than 70% today. But that share kept growing through 2026 while the low-$r$ rate recovered from a low of 59.2% in September 2025 to 68.3% today, so the mix cannot actually be.  
+
+Answering it properly needs per-signer data, which (for obvious reasons) I don't have. If you know something else about it, [get in touch](https://domenec-madrid.github.io/contact/).
 
 ## The numbers
 
@@ -524,11 +522,3 @@ And Taproot? You can't run any of this on it. A BIP-340 signature is a flat **64
 Which makes the follow-up a different question, and a better one: not how many bytes wallets ground away, but how many bytes Bitcoin saved by making them impossible to waste. That's the post I want to write next!
 
 <sub>*All data from [mainnet.observer](https://mainnet.observer) by [0xB10C](https://b10c.me), which does the hard part: parsing every block since 2009.*</sub>
-
-[^threshold]: $n/2$ = `0x7FFF...5D576E7357A4501DDFE92F46681B20A0`, comfortably under $2^{255}$. There is a razor-thin window between $n/2$ and $2^{255}$ where a high-$s$ value would still encode in 32 bytes, but it is about $2^{-128}$ of the range, so it never happens in practice.
-
-[^twobytes]: "At least", because about one value in 200 is itself below $2^{248}$, so DER drops *its* leading zero too and that value saves two bytes instead of one. I count one every time, which makes every figure here a floor. Cross-checked against mainnet.observer's signature-length counters, the shortfall is **0.52%**.
-
-[^estimate]: It is an approximation, and legacy multisig inputs, which carry several signatures each, bias the split. The byte counts are exact; the vbyte ones are not.
-
-[^schnorr]: 65 bytes if the spender wants a sighash type other than `SIGHASH_DEFAULT`, since BIP-341 appends the flag byte only in that case. Still fixed-length, still nothing to grind — though "did your wallet spend a byte writing an explicit `0x01`?" is arguably the Taproot-era descendant of this question.
