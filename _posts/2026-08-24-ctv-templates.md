@@ -180,8 +180,18 @@ Change anything on the left and watch the hash. The fields at the bottom are the
   }
   function hex(bytes) { return bytes.map(h2).join(''); }
 
+  // PurgeCSS scans the built site for literal class names, so these have to be
+  // spelled out in full here. Building them as 'demo-byte--' + key would leave
+  // the rules unreferenced and they would be stripped from the stylesheet.
+  var BYTE_CLASS = {
+    r: 'demo-byte--r',
+    s: 'demo-byte--s',
+    pad: 'demo-byte--pad',
+    dropped: 'demo-byte--dropped'
+  };
+
   function chip(bytes, cls, title) {
-    return '<span class="demo-byte' + (cls ? ' demo-byte--' + cls : '') + '" title="' + title + '">' +
+    return '<span class="demo-byte' + (cls ? ' ' + BYTE_CLASS[cls] : '') + '" title="' + title + '">' +
       hex(bytes) + '</span>';
   }
 
