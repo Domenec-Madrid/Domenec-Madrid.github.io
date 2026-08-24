@@ -251,7 +251,7 @@ High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in Aug
 
 ## How Much Of That Was Really Grinding?
 
-Everything above counts bytes that never reached the chain, and they are saved whatever the reason. But $r$ comes out low half the time by luck, so not all of them were paid for by anybody.
+Everything above counts bytes that never reached the chain, and they are saved whatever the reason. But $r$ comes out low half the time by luck.
 
 Say a year has 1,000 signatures and 700 are low-$r$. With nobody grinding you would still expect 500, so only the extra 200 are down to grinding:
 
@@ -259,7 +259,7 @@ $$
 \text{bytes from grinding} = \text{low-}r - \frac{\text{signatures}}{2}
 $$
 
-Over the whole history that gives **338,026,197 bytes, about 322 MiB**. The other 1.6 GiB of low-$r$ savings would have happened on their own. The same maths on $s$, where the alternative to luck is negating, gives **1,667,061,192 bytes, about 1.55 GiB**.
+Over the whole history there have been 3,459,841,248 ECDSA signatures, so chance alone would have produced 1,729,920,624 low-$r$ ones. The chain actually carries 2,067,946,821, which leaves $2{,}067{,}946{,}821 - 1{,}729{,}920{,}624 = 338{,}026{,}197$ bytes, about **322 MiB**, that somebody paid for. The remaining 1.6 GiB would have happened on its own.
 
 One catch: the formula credits grinding for any excess, including the excess luck put there. So the tool also measures how far the excess sits from chance. If every signature were a fair coin, that excess would have a standard deviation of $\sqrt{N}/2$; dividing one by the other gives a $\sigma$ count, and anything under 3 is what a coin does on a good day.
 
