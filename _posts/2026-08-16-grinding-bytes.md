@@ -251,17 +251,15 @@ High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in Aug
 
 ## How Much Of That Was Really Grinding?
 
-Everything above counts bytes that never reached the chain, and they are saved whatever the reason. But $r$ comes out low half the time by luck.
-
-Say a year has 1,000 signatures and 700 are low-$r$. With nobody grinding you would still expect 500, so only the extra 200 are down to grinding:
+Every low-$r$ signature saved a byte, but half of them would have been low anyway. When nobody grinds, $r$ is a coin flip. Only the excess over half was paid for by somebody:
 
 $$
-\text{bytes from grinding} = \text{low-}r - \frac{\text{signatures}}{2}
+\text{bytes from grinding} = \text{low-}r - \frac{N}{2}
 $$
 
-Over the whole history there have been 3,459,841,248 ECDSA signatures, so chance alone would have produced 1,729,920,624 low-$r$ ones. The chain actually carries 2,067,946,821, which leaves $2{,}067{,}946{,}821 - 1{,}729{,}920{,}624 = 338{,}026{,}197$ bytes, about **322 MiB**, that somebody paid for. The remaining 1.6 GiB would have happened on its own.
+Over all history that is 3,459,841,248 signatures, so chance alone gives 1,729,920,624 low-$r$ ones. The chain carries 2,067,946,821. The difference, **338,026,197 bytes or about 322 MiB**, is what grinding bought. The other 1.6 GiB was free.
 
-One catch: the formula credits grinding for any excess, including the excess luck put there. So the tool also measures how far the excess sits from chance. If every signature were a fair coin, that excess would have a standard deviation of $\sqrt{N}/2$; dividing one by the other gives a $\sigma$ count, and anything under 3 is what a coin does on a good day.
+The same subtraction works per year. But a coin flip never lands on exactly half, so a year with no grinding still shows some excess. For $N$ signatures that wobble is $\sqrt{N}/2$, and dividing the excess by it gives a $\sigma$ count: under 3 is what luck does on a good day.
 
 | period | bytes from grinding | $\sigma$ from chance |
 | --- | ---: | ---: |
@@ -282,13 +280,13 @@ One catch: the formula credits grinding for any excess, including the excess luc
 
 That column splits the history in three.
 
-**2009–2013 is luck.** The excess never reaches one $\sigma$, and it is slightly negative, so those five years bought nothing at all.
+**2009 to 2013 is luck.** 403 bytes of excess across five years, under one $\sigma$. Nobody was grinding.
 
-**2019 onward is grinding.** Thousands of $\sigma$. There is no other way to read it.
+**2019 onward is grinding.** Thousands of $\sigma$. Core shipped it in October 2018 and the chain answers immediately.
 
-**2014–2018 I cannot explain.** About 6 MiB over five years, but sitting at 139 to 363 $\sigma$, so it is not luck either, and it starts four years before v0.17.0. Something was already biased towards low $r$ before grinding shipped. Maybe a big service with its own signing code, maybe the signatures are less independent than a fair-coin model needs.
+**2014 to 2018 I cannot explain.** Only 6 MiB, but at 139 to 364 $\sigma$ it is not chance either, and it starts four years before the feature existed. Something was already leaning towards low $r$. A large service running its own signing code would explain it, and so would signatures being less independent than a fair coin assumes. I would rather leave it open than pick one.
 
-I would rather flag that than explain it away. What I will defend is the split: **98.2% of the 322 MiB comes from 2019 onward**, once v0.17.0 was out.
+What I will defend is the split: **98.2% of the 322 MiB comes from 2019 onward**, once v0.17.0 was out.
 
 That means that only about **36% of signatures come from software that grinds**.  
 
