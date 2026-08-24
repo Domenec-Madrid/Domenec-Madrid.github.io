@@ -195,7 +195,7 @@ And the bytes:
 | --- | ---: | ---: |
 | **$r$** | 2,067,946,821 B $\approx$ 1.93 GiB | 1,391,894,427 B $\approx$ 1.30 GiB |
 | **$s$** | 3,396,981,816 B $\approx$ 3.16 GiB | 62,859,432 B $\approx$ 60 MiB |
-| **total** | **5,464,928,637 B $\approx$ 5.09 GiB** | 1,454,753,859 B $\approx$ 1.35 GiB |
+| **total** | **5,464,928,637 B $\approx$ 5.09 GiB** | 1,454,753,859 B $\approx$ 1.35 GiB |  
 
 So low values have kept **5.09 GiB** off the chain, and another **1.35 GiB** went on it that could have been avoided.
 
@@ -224,13 +224,15 @@ So low values have kept **5.09 GiB** off the chain, and another **1.35 GiB** wen
 
 <small>\* 2026 is partial, through August 16th.</small>
 
-### Not all bytes weigh the same
+### Not All Bytes Weigh The Same
 
-Since [SegWit](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki), not every byte takes up the same amount of a block. A block holds 4,000,000 *weight units*: a byte in the base transaction costs 4 of them, a byte in the witness costs 1. Divide weight by four and you get *vbytes*, so a base byte is 1 vbyte and a witness byte is only **0.25**.
+Since [SegWit](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki), not every byte takes up the same amount of a block. A block holds 4,000,000 *weight units* and a byte in the base transaction costs 4 of them, a byte in the witness costs 1. Divide weight by four and you get *vbytes*, so a base byte is 1 vbyte and a witness byte is only **0.25**.
 
-That matters here because a signature in a legacy input sits in the scriptSig, which is base data, while a signature in a SegWit input sits in the witness.
+That matters here because a signature in a legacy input sits in the *scriptSig*, which is base data, while a signature in a *SegWit* input sits in the witness.
 
-mainnet.observer counts signatures but does not say which kind of input each one came from, so I estimate it: every day I split the signatures between scriptSig and witness in proportion to the legacy and SegWit v0 inputs spent that day. Taproot inputs are left out, since they carry Schnorr signatures, not ECDSA.[^estimate]
+**mainnet.observer** counts signatures but does not say which kind of input each one came from, so I had to do an approximation. Every day I splitted the signatures between *scriptSig* and *witness* in proportion to the *legacy* and *SegWit v0* inputs spent that day.  
+
+Taproot inputs are left out, since they carry Schnorr signatures, not ECDSA.[^taproot]
 
 So the 5.09 GiB saved is not 5.09 GiB of block space. Most of those were witness bytes:
 
@@ -466,3 +468,7 @@ And Taproot? You can't run any of this on it. A BIP-340 signature is a flat **64
 Which makes the follow-up a different question, and a better one: not how many bytes wallets ground away, but how many bytes Bitcoin saved by making them impossible to waste. That's the post I want to write next!
 
 <sub>*All data from [mainnet.observer](https://mainnet.observer) by [0xB10C](https://b10c.me), which does the hard part: parsing every block since 2009.*</sub>
+
+[^taproot]: A BIP-340 signature is a flat **64 bytes**: 32 for $R_x$ and 32 for $s$, written out as they are. There is no DER wrapper, so no length prefixes, no `INTEGER` tags and no sign bit to work around. A leading `0x00` cannot arise, which means there is no low-$r$, no high-$r$ and no byte to grind away. Taproot spends contribute nothing to either column of this accounting, saved or missed, so leaving them out is not an approximation but the correct treatment.
+
+[^schnorr]: 65 bytes if the spender wants a sighash type other than `SIGHASH_DEFAULT`, since BIP-341 appends the flag byte only in that case. Still fixed-length, still nothing to grind.
