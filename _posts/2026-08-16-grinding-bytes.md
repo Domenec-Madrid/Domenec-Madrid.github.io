@@ -234,9 +234,8 @@ That matters here because a signature in a legacy input sits in the *scriptSig*,
 
 Taproot inputs are left out, since they carry Schnorr signatures, not ECDSA.
 
-> ##### Note
 >
-> A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$, written out as they are. There is no DER wrapper, so no length prefixes, no `INTEGER` tags and no sign bit to pad around. A leading `0x00` cannot arise, which means there is no low-$r$, no high-$r$ and no byte to grind. Taproot spends contribute to neither column here, saved or missed.
+> A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$ which means any byte cannot be saved from here.
 {: .block-tip }
 
 So the 5.09 GiB saved is not 5.09 GiB of block space. Most of those were witness bytes:
@@ -248,9 +247,9 @@ So the 5.09 GiB saved is not 5.09 GiB of block space. Most of those were witness
 
 A block holds one million vbytes and a new one arrives every ten minutes, which turns any pile of vbytes into an amount of time. The saved side comes to **3,293 blocks**, about three weeks of chain. The missed side comes to **969 blocks**, close to a week.
 
-## What is still on the table
+#### What is still on the table
 
-That missed week is the number I keep coming back to. Counting only $r$, it is **906 blocks** of block space, more than six days, sitting in `0x00` bytes that a second signing attempt would have removed.
+That missed week is the number I keep coming back to, and almost all of it is $r$: **906 blocks** of block space, more than six days, sitting in `0x00` bytes that a second signing attempt would have removed. The remaining 63 blocks are high-$s$, which stopped happening in 2016 and is now a rounding error.
 
 It is not history either. High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in August 2026 low-$r$ is at 68.3%, so roughly **one signature in three still isn't ground**.
 
