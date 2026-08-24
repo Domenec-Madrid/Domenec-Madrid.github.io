@@ -20,7 +20,7 @@ That is what I worked on this summer for [Summer of Bitcoin](https://www.summero
 - [#16](https://github.com/bitcoindevkit/bdk_wallet/issues/16): the wallet trusted any unconfirmed coin that landed on its change keychain. But nothing stops a stranger from paying to a change address they spotted on-chain, and that money was counted as trusted even though the sender could still double-spend it.
 - [#273](https://github.com/bitcoindevkit/bdk_wallet/issues/273): the mirror image. Consolidating your own coins into a receive address was marked untrusted, while the same transaction sent to a change address was trusted. Same wallet, same coins, different bucket.
 
-## Not all balance is equal
+## BDK Balance
 
 BDK reports your balance as four numbers:
 
@@ -31,7 +31,7 @@ BDK reports your balance as four numbers:
 
 The last two are the interesting ones. Pending means the transaction isn't in a block yet, so it could still be replaced before it confirms.
 
-## Where the old logic went wrong
+### Where the old logic went wrong
 
 The old code decided trust from the keychain the money landed on. The whole rule was one closure:
 
@@ -41,7 +41,7 @@ The old code decided trust from the keychain the money landed on. The whole rule
 
 That is: "did this land on a change address? then trust it." But it asks the wrong question. Trust has nothing to do with which of your addresses received the coin; it depends on where the money came from, and that is exactly the two ways the assumption breaks (#16 and #273).
 
-## Trust comes from ancestry
+### Trust comes from ancestry
 
 So the wallet stops asking "whose address did this land on?" and starts asking "whose coins paid for it, all the way back?"
 
@@ -53,7 +53,7 @@ So the wallet stops asking "whose address did this land on?" and starts asking "
 
 The supermarket coin now lands in the middle row, the honest answer. Getting there takes both layers of the library.
 
-### In `bdk_chain` ([#2246](https://github.com/bitcoindevkit/bdk/pull/2246))
+#### In `bdk_chain` ([#2246](https://github.com/bitcoindevkit/bdk/pull/2246))
 
 I added `classify_outpoints`, which labels each coin with its spend eligibility (settled, immature, or pending with its trust). It walks back through the transactions that funded a coin and stops as soon as it hits something confirmed or tainted, memoizing what it has seen so shared history is never walked twice. `balance` becomes a thin fold over this.
 
@@ -62,13 +62,9 @@ The chain layer doesn't decide what counts as tainted, or as final. It takes two
 - `does_taint(&tx)`: should this transaction be considered tainted?
 - `is_settled(&pos)`: do we consider this chain position final?
 
-### In `bdk_wallet` ([#431](https://github.com/bitcoindevkit/bdk_wallet/pull/431))
+#### In `bdk_wallet` ([#431](https://github.com/bitcoindevkit/bdk_wallet/pull/431))
 
 The wallet supplies the first: "taint a transaction if any input spends an output I don't own." That single rule produces the whole table. The wallet never reasons about ancestry itself, and never mentions keychains again. It folds `classify_outpoints` directly, which leaves room to add wallet-only categories on top without touching bdk_chain.
-
-### Maturity is not settledness
-
-I also split two ideas that had been tangled together: maturity (the protocol's 100-block wait on mined coins) and settledness (how many confirmations you personally want before treating money as final). They used to be one check; separating them is what makes a new `min_confirmations` option possible.
 
 ### A small primitive ([#2263](https://github.com/bitcoindevkit/bdk/pull/2263))
 

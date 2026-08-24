@@ -7,7 +7,7 @@ tags: ["Bitcoin", "Cryptography", "Signatures", "Low-r grinding", "Rust", "Block
 categories:
 ---
 
-A few months ago, I wrote about [whether you can fingerprint a hardware wallet](/blog/2026/hww-fingerprinting/)from its signatures, and I discovered that some wallet vendors implement a subtle technique to save an almost free byte on each ECDSA signature.
+A few months ago, I wrote about [whether you can fingerprint a hardware wallet](/blog/2026/hww-fingerprinting/) from its signatures, and I discovered that some wallet vendors implement a subtle technique to save an almost free byte on each ECDSA signature.
 
 That's called **low-r grinding**. The **r** comes from one of the signature values, and **grinding** refers to repeatedly generating signatures until they manage to save that one byte.
 
@@ -173,9 +173,9 @@ html[data-theme="dark"] .grind-chart {
 
 **Low-$r$** is flat at 50% for nine years, bends in **October 2018** when v0.17.0 shipped, and peaks at **70.2% in December 2022**. Then it sags, and has been drifting between 60% and 68% ever since.
 
-I could not work out what drove the sag. My first guess was the input mix, since native P2WPKH went from 40% of all inputs in late 2022 to more than 70% today. But that share kept growing through 2026 while the low-$r$ rate recovered from a low of 59.2% in September 2025 to 68.3% today, so the mix cannot actually be.  
+I could not work out what drove the sag. My first guess was the input mix, since native P2WPKH went from 40% of all inputs in late 2022 to more than 70% today. But that share kept growing through 2026 while the low-$r$ rate recovered from a low of 59.2% in September 2025 to 68.3% today, so the mix cannot be the explanation.  
 
-Answering it properly needs per-signer data, which, for obvious reasons, I don't have. If you know have another theory, [get in touch](https://domenec-madrid.github.io/contact/).
+Answering it properly needs per-signer data, which, for obvious reasons, I don't have. If you have another theory, [get in touch](https://domenec-madrid.github.io/contact/).
 
 ### Bytes Saved and Missed
 
@@ -228,12 +228,11 @@ Since [SegWit](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki), 
 
 That matters here because a signature in a legacy input sits in the *scriptSig*, which is base data, while a signature in a *SegWit* input sits in the witness.
 
-**mainnet.observer** counts signatures but does not say which kind of input each one came from, so I had to do an approximation. Every day I splitted the signatures between *scriptSig* and *witness* in proportion to the *legacy* and *SegWit v0* inputs spent that day.  
+**mainnet.observer** counts signatures but does not say which kind of input each one came from, so I had to do an approximation. Every day I split the signatures between *scriptSig* and *witness* in proportion to the *legacy* and *SegWit v0* inputs spent that day.  
 
 Taproot inputs are left out, since they carry Schnorr signatures, not ECDSA.
 
->
-> A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$ which means any byte cannot be saved from here.
+> A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$, with no DER wrapper. There is no padding byte to avoid, so there is nothing to save here.
 {: .block-tip }
 
 So the 5.09 GiB saved is not 5.09 GiB of block space. Most of those were witness bytes:
@@ -249,54 +248,29 @@ Counting only $r$, it is **906 blocks** of block space, more than six days.
 
 High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in August 2026 low-$r$ is at 68.3%, so roughly **one signature in three still isn't ground**.
 
-## How Much Of That Was Really Grinding?
+That means that (this year) only about **36% of signatures come from software that grinds**.
 
-Every low-$r$ signature saved a byte, but half of them would have been low anyway. When nobody grinds, $r$ is a coin flip. Only the excess over half was paid for by somebody:
+### How Much Of That Was Really Grinding?
+
+Every low-$r$ signature saved a byte, but half of them would have been low anyway. The ones that count are the ones above that halfway line:
 
 $$
-\text{bytes from grinding} = \text{low-}r - \frac{N}{2}
+\text{signatures ground} = \text{low-}r - \frac{N}{2}
 $$
 
-Over all history that is 3,459,841,248 signatures, so chance alone gives 1,729,920,624 low-$r$ ones. The chain carries 2,067,946,821. The difference, **338,026,197 bytes or about 322 MiB**, is what grinding bought. The other 1.6 GiB was free.
+Out of $N = 3{,}459{,}841{,}248$ signatures, high-$r$ and low-$r$ together, chance alone would have made 1,729,920,624 of them low. The chain carries 2,067,946,821, so
 
-The same subtraction works per year. But a coin flip never lands on exactly half, so a year with no grinding still shows some excess. For $N$ signatures that wobble is $\sqrt{N}/2$, and dividing the excess by it gives a $\sigma$ count: under 3 is what luck does on a good day.
+$$2{,}067{,}946{,}821 - 1{,}729{,}920{,}624 = 338{,}026{,}197 \text{ signatures}$$
 
-| period | bytes from grinding | $\sigma$ from chance |
-| --- | ---: | ---: |
-| 2009–2013 | 0 | −0.3 |
-| 2014 | 23,772 | 6 |
-| 2015 | 2,104,158 | 363 |
-| 2016 | 1,592,323 | 208 |
-| 2017 | 1,283,103 | 151 |
-| 2018 | 1,117,404 | 139 |
-| 2019 | 20,419,318 | 2,384 |
-| 2020 | 44,262,638 | 4,891 |
-| 2021 | 56,178,700 | 6,134 |
-| 2022 | 60,701,680 | 6,665 |
-| 2023 | 50,067,230 | 5,826 |
-| 2024 | 38,042,050 | 4,366 |
-| 2025 | 33,467,800 | 3,799 |
-| 2026\* | 28,767,298 | 3,976 |
+were made low deliberately. At one byte saved each that is **322 MiB**, against the **1.93 GiB** low-$r$ has saved in total. Grinding accounts for **~16% of the low-$r$ savings**.
 
-That column splits the history in three.
-
-**2009 to 2013 is luck.** 403 bytes of excess across five years, under one $\sigma$. Nobody was grinding.
-
-**2019 onward is grinding.** Thousands of $\sigma$. Core shipped it in October 2018 and the chain answers immediately.
-
-**2014 to 2018 I cannot explain.** Only 6 MiB, but at 139 to 364 $\sigma$ it is not chance either, and it starts four years before the feature existed. Something was already leaning towards low $r$. A large service running its own signing code would explain it, and so would signatures being less independent than a fair coin assumes. I would rather leave it open than pick one.
-
-What I will defend is the split: **98.2% of the 322 MiB comes from 2019 onward**, once v0.17.0 was out.
-
-That means that only about **36% of signatures come from software that grinds**.  
-
-### How to Grind Even a Little “Byte” More
+## How to Grind Even a Little “Byte” More
 
 There is actually one more byte we could save.
 
 If we kept grinding until $r < 2^{248}$, the first byte of $r$ would be `0x00`. DER could then drop it entirely, saving a second byte from every signature. Had this been done throughout Bitcoin's history, it would have saved another **3.22 GiB**, about two thirds of what low values have saved so far.
 
-But! There is a reason nobody does it. Finding a regular low-$r$ value takes about two signing attempts on average. Finding one below $2^{248}$ would take about 256, making your signing device considerably slow every time you sign something.  
+But! There is a reason nobody does it. Finding a regular low-$r$ value takes about two signing attempts on average. Finding one below $2^{248}$ would take about 256, making your signing device considerably slower every time you sign something.  
 
 Furthermore, I am not aware of any device that implements this technique. If only one device did it, its unusually short signatures would make it easy to fingerprint on-chain.
 
@@ -430,39 +404,12 @@ Furthermore, I am not aware of any device that implements this technique. If onl
 })();
 </script>
 
+## So, Was It Worth It?
 
+Grinding $r$ has bought Bitcoin 322 MiB of chain, about 159 blocks, in exchange for roughly doubling the ECDSA signing work of every wallet that does it.
 
-## Run it yourself
+Low-$r$ grinding has been available, documented and free-as-in-code for eight years, and two thirds of Bitcoin's ECDSA signatures still come from signers that don't use it. If your wallet signs ECDSA and doesn't grind, there are six days of block space with your name on it :p
 
-The tool is Rust, two small modules and two dependencies. It caches every CSV on the first run, so after that it works offline.
-
-```bash
-cargo build --release
-
-# all-time summary
-./target/release/bytes-saved-by-grinding-signatures
-
-# since low-r grinding shipped, month by month
-./target/release/bytes-saved-by-grinding-signatures --from 2018-10-01 --group month
-
-# export for plotting
-./target/release/bytes-saved-by-grinding-signatures --group month --csv > out.csv
-```
-
-Every figure here comes out of that binary, except the input-mix percentages in the sag paragraph, which I worked out separately. Code and methodology notes are in the [repository](https://github.com/Dmenec/bytes-saved-by-grinding-signatures).
-
-## So, was it worth it?
-
-Grinding $r$ has bought Bitcoin 322 MiB of chain, about 159 blocks, in exchange for roughly doubling the ECDSA signing work of every wallet that does it. Negating $s$ cost nobody anything and bought five times more, in two years instead of eight.
-
-That gap is the actual lesson, and it is not about bytes:
-
-> Free optimizations reach 100%. Optimizations that cost something stall at two thirds and then drift back down.
-
-Low-$r$ grinding has been available, documented and free-as-in-code for eight years, and two thirds of Bitcoin's ECDSA signatures still come from signers that don't use it. If your wallet signs ECDSA and doesn't grind, there are six days of block space with your name on it.
-
-And Taproot? You can't run any of this on it. A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$, with no DER wrapper, no length prefixes and no sign bit to pad around. The `0x00` this whole post is about cannot exist there, so there is no low-$r$, no high-$r$ and nothing to grind.
-
-Which makes the follow-up a different question, and a better one: not how many bytes wallets ground away, but how many bytes Bitcoin saved by making them impossible to waste. That's the post I want to write next!
+Writing this post made me wonder what the same analysis would look like for Schnorr signatures. There are far fewer of them than ECDSA signatures (and you're not saving just 1 byte), so I suspect the numbers would be even more surprising!
 
 <sub>*All data from [mainnet.observer](https://mainnet.observer) by [0xB10C](https://b10c.me), which does the hard part: parsing every block since 2009.*</sub>
