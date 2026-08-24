@@ -36,171 +36,135 @@ Schnorr signatures always encode to exactly **64 bytes**, 32 for the $x$-coordin
 
 ---
 
-<div class="demo-card" id="ecdsa-demo">
-  <div class="card-body">
-    <h6 class="card-title fw-bold mb-1">ECDSA vs Schnorr — signature length visualizer</h6>
-    <p class="card-text text-muted mb-3" style="font-size:0.85rem">
-      Random values simulate the nonce-derived $r$ and the BIP-62-normalized $s$. Hover any byte for its role.
-    </p>
-    <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
-      <button class="demo-btn demo-btn--primary" id="ecdsa-sign-btn">Sign</button>
-      <button class="demo-btn" id="ecdsa-sign-many-btn">Sign 100×</button>
-      <div class="form-check form-switch mb-0">
-        <input class="form-check-input" type="checkbox" id="ecdsa-lowr-toggle">
-        <label class="form-check-label small" for="ecdsa-lowr-toggle">Low-<em>r</em> grinding</label>
-      </div>
+<div class="demo-block" id="ecdsa-demo">
+  <h6 class="demo-heading">ECDSA vs Schnorr &mdash; encoded length</h6>
+
+  <div class="demo-modes">
+    <button class="demo-mode is-active" id="ecdsa-sign-btn">Sign once</button>
+    <button class="demo-mode" id="ecdsa-lowr-btn">Sign with low-<em>r</em> grinding</button>
+    <button class="demo-mode" id="ecdsa-sign-many-btn">Sign 100&times;</button>
+  </div>
+
+  <div class="demo-stats">
+    <div>
+      <span class="demo-stat-value" id="ecdsa-len">&mdash;</span>
+      <span class="demo-stat-label">ECDSA bytes</span>
     </div>
-    <div id="ecdsa-output" style="display:none">
-      <div class="d-flex gap-3 mb-3 flex-wrap">
-        <div class="text-center">
-          <div id="ecdsa-badge-len" class="demo-badge">?? bytes</div>
-          <div class="small text-muted mt-1">ECDSA size</div>
-        </div>
-        <div class="text-center" id="ecdsa-attempts-block" style="display:none">
-          <div id="ecdsa-badge-attempts" class="demo-badge">? attempt</div>
-          <div class="small text-muted mt-1">grinding rounds</div>
-        </div>
-        <div class="text-center">
-          <div class="demo-badge demo-badge--flat">64 bytes</div>
-          <div class="small text-muted mt-1">Schnorr size</div>
-        </div>
-      </div>
-      <div class="mb-2">
-        <div class="small fw-bold mb-1">ECDSA — DER encoding</div>
-        <div id="ecdsa-der-viz" class="font-monospace" style="word-break:break-all;line-height:2.1;font-size:0.78rem"></div>
-        <div class="mt-2 d-flex flex-wrap gap-1" style="font-size:0.75rem">
-          <span class="demo-badge" style="background:var(--demo-stone)">structure</span>
-          <span class="demo-badge" style="background:var(--demo-orange)">r bytes</span>
-          <span class="demo-badge" style="background:var(--demo-brick)">0x00 padding</span>
-          <span class="demo-badge" style="background:var(--demo-green)">s bytes</span>
-          <span class="demo-badge" style="background:var(--demo-dusk)">SIGHASH</span>
-        </div>
-      </div>
-      <div class="mt-3">
-        <div class="small fw-bold mb-1">Schnorr (Taproot) — always 64 bytes, no DER</div>
-        <div id="ecdsa-schnorr-viz" class="font-monospace" style="word-break:break-all;line-height:2.1;font-size:0.78rem"></div>
-        <div class="mt-2 d-flex flex-wrap gap-1" style="font-size:0.75rem">
-          <span class="demo-badge" style="background:var(--demo-orange)">R x-coord (32 B)</span>
-          <span class="demo-badge" style="background:var(--demo-green)">s (32 B)</span>
-        </div>
-      </div>
-      <div id="ecdsa-many-stats" style="display:none" class="mt-3 p-2 rounded" style="background:var(--global-code-bg-color)">
-        <div class="small fw-bold">Last 100 signatures:</div>
-        <div class="d-flex gap-3 mt-1 small">
-          <span><strong id="ecdsa-c71">0</strong> × 71 bytes</span>
-          <span><strong id="ecdsa-c72">0</strong> × 72 bytes</span>
-        </div>
-      </div>
+    <div id="ecdsa-attempts-block" style="display:none">
+      <span class="demo-stat-value" id="ecdsa-attempts">&mdash;</span>
+      <span class="demo-stat-label">grinding rounds</span>
     </div>
+    <div>
+      <span class="demo-stat-value">64</span>
+      <span class="demo-stat-label">Schnorr bytes</span>
+    </div>
+  </div>
+
+  <div id="ecdsa-output" style="display:none">
+    <div class="demo-legend">
+      <span class="is-quiet">DER structure</span>
+      <span class="is-r"><em>r</em></span>
+      <span class="is-s"><em>s</em></span>
+      <span class="is-pad">0x00 padding</span>
+    </div>
+    <div id="ecdsa-der-viz" class="demo-hex"></div>
+
+    <div class="demo-legend">
+      <span class="is-r">R x-coordinate</span>
+      <span class="is-s"><em>s</em></span>
+    </div>
+    <div id="ecdsa-schnorr-viz" class="demo-hex"></div>
+
+    <div class="demo-note" id="ecdsa-note"></div>
   </div>
 </div>
 
 <script>
 (function () {
-  function randBytes(n) {
-    const a = new Uint8Array(n);
-    crypto.getRandomValues(a);
-    return a;
-  }
+  function randBytes(n) { var a = new Uint8Array(n); crypto.getRandomValues(a); return a; }
+  function h2(b) { return b.toString(16).padStart(2, '0'); }
 
   function signECDSA(grind) {
-    let r, attempts = 0;
-    do {
-      r = randBytes(32);
-      attempts++;
-    } while (grind && r[0] >= 0x80 && attempts < 500);
+    var r, attempts = 0;
+    do { r = randBytes(32); attempts++; } while (grind && r[0] >= 0x80 && attempts < 500);
 
-    // BIP-62: low-s ⟹ s[0] always < 0x80
-    const s = randBytes(32);
-    s[0] = s[0] & 0x7f;
+    var s = randBytes(32);          // BIP-62 low-s: s[0] is always < 0x80
+    s[0] &= 0x7f;
     if (s[0] === 0) s[0] = 0x01;
 
-    const needsPad = r[0] >= 0x80;
-    const rLen = needsPad ? 33 : 32;
-    // structure: 0x30 totalLen 0x02 rLen [pad] r 0x02 0x20 s 0x01
-    const totalLen = 2 + rLen + 2 + 32;
-    const sigLen = 1 + 1 + totalLen + 1; // +1 sighash
-
-    return { r, s, needsPad, rLen, totalLen, sigLen, attempts };
+    var needsPad = r[0] >= 0x80;
+    var rLen = needsPad ? 33 : 32;
+    return { r: r, s: s, needsPad: needsPad, rLen: rLen, sigLen: 6 + rLen + 32 + 1, attempts: attempts };
   }
 
-  function byte(hex, title, bg, fg) {
-    // Styling lives in .demo-byte (_sass/_demos.scss); only the role colour
-    // varies per byte, so that is all we set inline.
-    return '<span class="demo-byte" title="' + title + '" style="background:' + bg +
-      (fg ? ';color:' + fg : '') + '">' + hex + '</span>';
+  function cell(hex, cls, title) {
+    return '<span class="demo-byte' + (cls ? ' demo-byte--' + cls : '') +
+      '" title="' + title + '">' + hex + '</span>';
   }
 
   function renderDER(sig) {
-    const { r, s, needsPad, rLen, totalLen } = sig;
-    let h = '';
-    h += byte('30', 'SEQUENCE tag', 'var(--demo-stone)');
-    h += byte(totalLen.toString(16).padStart(2, '0'), 'total length: ' + totalLen + ' bytes', 'var(--demo-stone)');
-    h += byte('02', 'INTEGER tag (r)', 'var(--demo-orange)');
-    h += byte(rLen.toString(16).padStart(2, '0'), 'r length: ' + rLen + ' bytes', 'var(--demo-orange)');
-    if (needsPad) h += byte('00', 'padding: r[0] ≥ 0x80, two\'s-complement sign bit', 'var(--demo-brick)');
-    Array.from(r).forEach(function (b, i) {
-      h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']' + (i === 0 && needsPad ? ' — would be negative without padding' : ''), 'var(--demo-orange)');
-    });
-    h += byte('02', 'INTEGER tag (s)', 'var(--demo-green)');
-    h += byte('20', 's length: 32 bytes (BIP-62 low-s ⟹ never needs padding)', 'var(--demo-green)');
-    Array.from(s).forEach(function (b, i) {
-      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', 'var(--demo-green)');
-    });
-    h += byte('01', 'SIGHASH_ALL', 'var(--demo-dusk)');
-    return h;
+    var out = '';
+    out += cell('30', '', 'SEQUENCE') + cell(h2(4 + sig.rLen + 32), '', 'total length');
+    out += cell('02', '', 'INTEGER (r)') + cell(h2(sig.rLen), '', 'r is ' + sig.rLen + ' bytes');
+    if (sig.needsPad) out += cell('00', 'pad', "r[0] >= 0x80, two's-complement sign bit");
+    Array.from(sig.r).forEach(function (b, i) { out += cell(h2(b), 'r', 'r[' + i + ']'); });
+    out += cell('02', '', 'INTEGER (s)') + cell('20', '', 's is 32 bytes (BIP-62 low-s)');
+    Array.from(sig.s).forEach(function (b, i) { out += cell(h2(b), 's', 's[' + i + ']'); });
+    out += cell('01', '', 'SIGHASH_ALL');
+    return out;
   }
 
   function renderSchnorr() {
-    const R = randBytes(32);
-    const s = randBytes(32);
-    let h = '';
-    Array.from(R).forEach(function (b, i) {
-      h += byte(b.toString(16).padStart(2, '0'), 'R[' + i + '] — nonce point x-coordinate', 'var(--demo-orange)');
-    });
-    Array.from(s).forEach(function (b, i) {
-      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', 'var(--demo-green)');
-    });
-    return h;
+    var out = '';
+    Array.from(randBytes(32)).forEach(function (b, i) { out += cell(h2(b), 'r', 'R[' + i + '] — nonce point x-coordinate'); });
+    Array.from(randBytes(32)).forEach(function (b, i) { out += cell(h2(b), 's', 's[' + i + ']'); });
+    return out;
   }
 
-  function updateUI(sig) {
-    const grind = document.getElementById('ecdsa-lowr-toggle').checked;
-    document.getElementById('ecdsa-badge-len').textContent = sig.sigLen + ' bytes';
-    document.getElementById('ecdsa-badge-len').className = 'demo-badge ' + (sig.sigLen === 71 ? 'demo-badge--good' : 'demo-badge--warn');
-    document.getElementById('ecdsa-badge-len').style.color = sig.sigLen === 71 ? '' : '#000';
-    const attBlock = document.getElementById('ecdsa-attempts-block');
-    if (grind) {
-      attBlock.style.display = '';
-      document.getElementById('ecdsa-badge-attempts').textContent = sig.attempts + ' attempt' + (sig.attempts !== 1 ? 's' : '');
-    } else {
-      attBlock.style.display = 'none';
-    }
+  function setActive(btn) {
+    document.querySelectorAll('#ecdsa-demo .demo-mode').forEach(function (b) {
+      b.classList.toggle('is-active', b === btn);
+    });
+  }
+
+  function show(sig, grind) {
+    document.getElementById('ecdsa-len').textContent = sig.sigLen;
+    var att = document.getElementById('ecdsa-attempts-block');
+    att.style.display = grind ? '' : 'none';
+    if (grind) document.getElementById('ecdsa-attempts').textContent = sig.attempts;
     document.getElementById('ecdsa-der-viz').innerHTML = renderDER(sig);
     document.getElementById('ecdsa-schnorr-viz').innerHTML = renderSchnorr();
-    document.getElementById('ecdsa-output').style.display = '';
+    document.getElementById('ecdsa-note').innerHTML = sig.needsPad
+      ? '<code>r[0] &ge; 0x80</code>, so DER prepends <code>0x00</code> and the signature runs to 72 bytes. ' +
+        'Schnorr carries the same two 32-byte values in a fixed 64, with no DER wrapper and nothing to pad.'
+      : '<code>r &lt; 2<sup>255</sup></code>, so no padding byte and the signature is 71 bytes. ' +
+        'Schnorr is 64 regardless: the length never depends on the value.';
+    document.getElementById('ecdsa-output').style.display = 'block';
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('ecdsa-sign-btn').addEventListener('click', function () {
-      const sig = signECDSA(document.getElementById('ecdsa-lowr-toggle').checked);
-      updateUI(sig);
-      document.getElementById('ecdsa-many-stats').style.display = 'none';
+  function init() {
+    var one = document.getElementById('ecdsa-sign-btn');
+    var low = document.getElementById('ecdsa-lowr-btn');
+    var many = document.getElementById('ecdsa-sign-many-btn');
+
+    one.addEventListener('click', function () { setActive(one); show(signECDSA(false), false); });
+    low.addEventListener('click', function () { setActive(low); show(signECDSA(true), true); });
+    many.addEventListener('click', function () {
+      setActive(many);
+      var c71 = 0, last = null;
+      for (var i = 0; i < 100; i++) { last = signECDSA(false); if (last.sigLen === 71) c71++; }
+      show(last, false);
+      document.getElementById('ecdsa-note').innerHTML =
+        '100 signatures, no grinding: <strong>' + c71 + '</strong> came out at 71 bytes and <strong>' +
+        (100 - c71) + '</strong> at 72. The split is a coin flip because it is decided by one bit of <em>r</em>.';
     });
 
-    document.getElementById('ecdsa-sign-many-btn').addEventListener('click', function () {
-      const grind = document.getElementById('ecdsa-lowr-toggle').checked;
-      let c71 = 0, c72 = 0;
-      for (let i = 0; i < 100; i++) {
-        const s = signECDSA(grind);
-        s.sigLen === 71 ? c71++ : c72++;
-      }
-      updateUI(signECDSA(grind));
-      document.getElementById('ecdsa-c71').textContent = c71;
-      document.getElementById('ecdsa-c72').textContent = c72;
-      document.getElementById('ecdsa-many-stats').style.display = '';
-    });
-  });
+    setActive(one);
+    show(signECDSA(false), false);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 

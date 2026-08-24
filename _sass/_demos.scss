@@ -1,145 +1,240 @@
 /*******************************************************************************
  * Interactive post demos
  *
- * Shared palette and components for the in-post widgets (byte breakdowns,
- * charts, signing simulators). The demos used to carry Bootstrap's default
- * blues and purples, which fought with the site's orange-and-green mountain
- * backdrop. Everything here is built from stone, bitcoin orange, brick, amber,
- * forest and dusk, so a demo reads as part of the page rather than a widget
- * dropped into it.
+ * These widgets sit inside the prose, so they are deliberately not cards: no
+ * border, no panel background, no shadow. A pair of hairlines separates them
+ * from the text and nothing else does.
  *
- * Roles are stable across posts: r bytes are always orange, s bytes always
- * green, the padding byte always brick.
+ * Colour is spent only where something happens. DER scaffolding stays quiet,
+ * r and s carry the two protagonist hues (orange and forest, matching the
+ * mountain backdrop), and only the padding and dropped bytes get a fill,
+ * because those are the events the reader is here for.
  ******************************************************************************/
 
 :root {
-  --demo-stone: #6f6a63;
-  --demo-orange: #d97f0c;
-  --demo-brick: #b0402c;
-  --demo-amber: #a8861f;
-  --demo-green: #2f7d4f;
-  --demo-dusk: #46655d;
-  --demo-chip-ink: #ffffff;
+  --demo-quiet: #9a958d;
+  --demo-r: #c47510;
+  --demo-s: #2f7d4f;
+  --demo-pad: #b0402c;
+  --demo-pad-bg: rgba(176, 64, 44, 0.12);
+  --demo-drop: #957713;
+  --demo-drop-bg: rgba(149, 119, 19, 0.14);
+  --demo-rule: rgba(0, 0, 0, 0.09);
   --demo-surface: rgba(0, 0, 0, 0.03);
+  --demo-fill-ink: #ffffff;
 }
 
 html[data-theme="dark"] {
-  --demo-stone: #8d877e;
-  --demo-orange: #e8931f;
-  --demo-brick: #c9563f;
-  --demo-amber: #c2a032;
-  --demo-green: #3f9a63;
-  --demo-dusk: #5c8177;
-  --demo-chip-ink: #16181a;
+  --demo-quiet: #7d786f;
+  --demo-r: #e8931f;
+  --demo-s: #4aa870;
+  --demo-pad: #d4614a;
+  --demo-pad-bg: rgba(212, 97, 74, 0.18);
+  --demo-drop: #c9a63a;
+  --demo-drop-bg: rgba(201, 166, 58, 0.18);
+  --demo-rule: rgba(255, 255, 255, 0.12);
   --demo-surface: rgba(255, 255, 255, 0.05);
+  --demo-fill-ink: #16181a;
 }
 
-.demo-card {
-  margin: 1.75rem 0;
-  border: 1px solid var(--global-divider-color);
-  border-radius: 6px;
-  background-color: var(--global-card-bg-color);
-
-  // A thin ridge of bitcoin orange, echoing the backdrop.
-  border-top: 3px solid var(--demo-orange);
+/* Unboxed container: hairlines above and below, nothing else. */
+.demo-block {
+  margin: 2.25rem 0;
+  padding: 1.4rem 0;
+  border-top: 1px solid var(--demo-rule);
+  border-bottom: 1px solid var(--demo-rule);
 }
 
-.demo-btn {
-  padding: 0.28rem 0.7rem;
-  border: 1px solid var(--demo-stone);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--global-text-color);
-  font-size: 0.85rem;
-  line-height: 1.5;
-  cursor: pointer;
-  transition:
-    background-color 0.12s,
-    border-color 0.12s,
-    color 0.12s;
-
-  &:hover {
-    border-color: var(--demo-orange);
-    color: var(--demo-orange);
-  }
-}
-
-.demo-btn--primary {
-  border-color: var(--demo-orange);
-  background: var(--demo-orange);
-  color: var(--demo-chip-ink);
-
-  &:hover {
-    background: var(--demo-amber);
-    border-color: var(--demo-amber);
-    color: var(--demo-chip-ink);
-  }
-}
-
-.demo-btn--extreme {
-  border-color: var(--demo-brick);
-  color: var(--demo-brick);
-
-  &:hover {
-    background: var(--demo-brick);
-    border-color: var(--demo-brick);
-    color: var(--demo-chip-ink);
-  }
-}
-
-.demo-badge {
-  display: inline-block;
-  padding: 0.3em 0.6em;
-  border-radius: 4px;
-  background: var(--demo-stone);
-  color: var(--demo-chip-ink);
-  font-size: 0.95rem;
+.demo-heading {
+  margin: 0 0 1rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
 }
 
-.demo-badge--good {
-  background: var(--demo-green);
-}
-.demo-badge--warn {
-  background: var(--demo-amber);
-}
-.demo-badge--bad {
-  background: var(--demo-brick);
-}
-.demo-badge--flat {
-  background: var(--demo-dusk);
-}
-
-/* Legend swatches above a byte breakdown. */
-.demo-legend {
+/* Segmented mode switch. The active segment fills with the accent. */
+.demo-modes {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  font-size: 0.72rem;
+  gap: 0;
+  margin-bottom: 1.6rem;
+  border: 1px solid var(--demo-rule);
+  border-radius: 6px;
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
 }
 
-.demo-legend .demo-badge {
-  font-size: 0.72rem;
-  font-weight: 500;
+.demo-mode {
+  padding: 0.55rem 1.1rem;
+  border: 0;
+  border-right: 1px solid var(--demo-rule);
+  background: transparent;
+  color: var(--global-text-color-light);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  cursor: pointer;
+  transition:
+    background-color 0.14s,
+    color 0.14s;
+
+  &:last-child {
+    border-right: 0;
+  }
+
+  &:hover {
+    background: var(--demo-pad-bg);
+    color: var(--global-text-color);
+  }
+
+  &.is-active {
+    background: var(--demo-r);
+    color: var(--demo-fill-ink);
+    font-weight: 600;
+  }
 }
 
-/* Individual byte chips, emitted from the demo scripts. */
+/* Two numbers, given room to breathe. */
+.demo-stats {
+  display: flex;
+  gap: 3.5rem;
+  margin-bottom: 1.6rem;
+}
+
+.demo-stat-value {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--global-text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-stat-label {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+}
+
+/* Byte stream. Generous leading, since these run to seventy-odd cells. */
+.demo-hex {
+  font-family: var(--bs-font-monospace, ui-monospace, monospace);
+  font-size: 0.8rem;
+  line-height: 2.4;
+  word-break: break-all;
+  margin-bottom: 1.4rem;
+}
+
 .demo-byte {
-  display: inline-block;
-  margin: 1px;
-  padding: 1px 5px;
+  padding: 0.18em 0.1em;
+  margin-right: 0.34em;
+  color: var(--demo-quiet);
   border-radius: 3px;
-  color: var(--demo-chip-ink);
-  font-size: 0.78rem;
   cursor: default;
 }
 
+.demo-byte--r {
+  color: var(--demo-r);
+}
+.demo-byte--s {
+  color: var(--demo-s);
+}
+
+.demo-byte--pad {
+  padding-inline: 0.34em;
+  background: var(--demo-pad-bg);
+  color: var(--demo-pad);
+  font-weight: 700;
+}
+
+.demo-byte--dropped {
+  padding-inline: 0.34em;
+  background: var(--demo-drop-bg);
+  color: var(--demo-drop);
+  text-decoration: line-through;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.72rem;
+  color: var(--global-text-color-light);
+}
+
+.demo-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.4rem;
+  border-radius: 2px;
+  background: currentcolor;
+  vertical-align: baseline;
+}
+
+.demo-legend .is-r {
+  color: var(--demo-r);
+}
+.demo-legend .is-s {
+  color: var(--demo-s);
+}
+.demo-legend .is-pad {
+  color: var(--demo-pad);
+}
+.demo-legend .is-quiet {
+  color: var(--demo-quiet);
+}
+
 .demo-note {
-  margin-top: 0.75rem;
-  padding: 0.5rem 0.7rem;
-  border-left: 3px solid var(--demo-orange);
-  border-radius: 3px;
-  background: var(--demo-surface);
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--demo-r);
   font-size: 0.85rem;
+  line-height: 1.6;
+
+  code {
+    font-size: 0.9em;
+  }
+}
+
+/* Form controls, used by the CTV template inspector. */
+.demo-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+
+  label {
+    flex: 0 0 46%;
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-size: 0.78rem;
+    color: var(--global-text-color-light);
+  }
+
+  input,
+  select {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.2rem 0.45rem;
+    border: 0;
+    border-bottom: 1px solid var(--demo-rule);
+    border-radius: 0;
+    background: transparent;
+    color: var(--global-text-color);
+    font-family: inherit;
+    font-size: 0.8rem;
+
+    &:focus {
+      outline: none;
+      border-bottom-color: var(--demo-r);
+    }
+  }
 }

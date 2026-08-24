@@ -57,15 +57,15 @@ To do the accounting I wrote a small [tool](https://github.com/Dmenec/bytes-save
   --viz-grid: var(--global-divider-color);
   --viz-base: #8a8a8a;
   --viz-ann: #b0b0b0;
-  --viz-s1: var(--demo-orange);
-  --viz-s2: var(--demo-green);
+  --viz-s1: var(--demo-r);
+  --viz-s2: var(--demo-s);
   margin: 1.5rem 0;
 }
 html[data-theme="dark"] .grind-chart {
   --viz-base: #7d7d7d;
   --viz-ann: #5c5c5c;
-  --viz-s1: var(--demo-orange);
-  --viz-s2: var(--demo-green);
+  --viz-s1: var(--demo-r);
+  --viz-s2: var(--demo-s);
 }
 .grind-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
 .grind-plot { position: relative; }
@@ -175,9 +175,9 @@ html[data-theme="dark"] .grind-chart {
 
 I could not work out what drove the sag. My first guess was the input mix, since native P2WPKH went from 40% of all inputs in late 2022 to more than 70% today. But that share kept growing through 2026 while the low-$r$ rate recovered from a low of 59.2% in September 2025 to 68.3% today, so the mix cannot actually be.  
 
-Answering it properly needs per-signer data, which (for obvious reasons) I don't have. If you know something else about it, [get in touch](https://domenec-madrid.github.io/contact/).
+Answering it properly needs per-signer data, which, for obvious reasons, I don't have. If you know have another theory, [get in touch](https://domenec-madrid.github.io/contact/).
 
-## The numbers
+### Bytes Saved and Missed
 
 Every ECDSA signature ever mined, up to 2026-08-16:
 
@@ -197,9 +197,9 @@ And the bytes:
 | **$s$** | 3,396,981,816 B $\approx$ 3.16 GiB | 62,859,432 B $\approx$ 60 MiB |
 | **total** | **5,464,928,637 B $\approx$ 5.09 GiB** | 1,454,753,859 B $\approx$ 1.35 GiB |
 
-So low values have kept **5.09 GiB** off the chain, and another **1.35 GiB** went on it that did not have to.
+So low values have kept **5.09 GiB** off the chain, and another **1.35 GiB** went on it that could have been avoided.
 
-### Year by year
+### Year By Year
 
 | year | ECDSA signatures | low-$r$ | low-$s$ | bytes saved by low-$r$ |
 | --- | ---: | ---: | ---: | ---: |
@@ -261,189 +261,124 @@ There is one more byte down there. Grind until $r < 2^{248}$, so the top byte of
 
 Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emitting 70-byte ECDSA signatures would be the loudest fingerprint on the chain. The byte you save is not always worth the identity you spend.
 
-<div class="demo-card" id="ecdsa-grinding-demo">
-  <div class="card-body">
-    <h6 class="card-title fw-bold mb-1">ECDSA signature grinding — what each byte costs</h6>
-    <p class="card-text text-muted mb-3" style="font-size:0.85rem">
-      A simulation of the encoder: draw a nonce and watch what DER does with the resulting <em>r</em>. Each byte you shave off costs signing work, and eventually costs privacy.
-    </p>
-    
-    <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
-      <button class="demo-btn" id="grind-btn-std">Standard signature (1 try)</button>
-      <button class="demo-btn demo-btn--primary" id="grind-btn-lowr">Grind low-<em>r</em> (71 B, ~2 tries)</button>
-      <button class="demo-btn demo-btn--extreme" id="grind-btn-extreme">Extreme grind (70 B, ~256 tries)</button>
+<div class="demo-block" id="grind-demo">
+  <h6 class="demo-heading">ECDSA signature grinding</h6>
+
+  <div class="demo-modes">
+    <button class="demo-mode is-active" data-mode="standard">No grinding</button>
+    <button class="demo-mode" data-mode="low-r">Grind low-<em>r</em></button>
+    <button class="demo-mode" data-mode="drop-byte">Grind <em>r</em> &lt; 2<sup>248</sup></button>
+  </div>
+
+  <div class="demo-stats">
+    <div>
+      <span class="demo-stat-value" id="grind-len">&mdash;</span>
+      <span class="demo-stat-label">signature bytes</span>
     </div>
-
-    <div id="grind-output" style="display:none">
-      <div class="d-flex gap-3 mb-3 flex-wrap">
-        <div class="text-center">
-          <div id="grind-badge-len" class="demo-badge">?? bytes</div>
-          <div class="small text-muted mt-1">Signature size</div>
-        </div>
-        <div class="text-center">
-          <div id="grind-badge-attempts" class="demo-badge">1 try</div>
-          <div class="small text-muted mt-1">Grinding rounds</div>
-        </div>
-        <div class="text-center">
-          <div id="grind-badge-privacy" class="demo-badge">Normal</div>
-          <div class="small text-muted mt-1">On-chain fingerprint</div>
-        </div>
-      </div>
-
-      <div class="mb-2">
-        <div class="small fw-bold mb-1">DER structure, byte by byte</div>
-        <div id="grind-der-viz" class="font-monospace" style="word-break:break-all;line-height:2.1;font-size:0.78rem"></div>
-        <div class="mt-2 d-flex flex-wrap gap-1" style="font-size:0.75rem">
-          <span class="demo-badge" style="background:var(--demo-stone)">DER structure</span>
-          <span class="demo-badge" style="background:var(--demo-orange)">r bytes</span>
-          <span class="demo-badge" style="background:var(--demo-brick)">0x00 padding (r &#8805; 0x80)</span>
-          <span class="demo-badge" style="background:var(--demo-amber)">r[0] dropped by DER</span>
-          <span class="demo-badge" style="background:var(--demo-green)">s bytes (low-s)</span>
-          <span class="demo-badge" style="background:var(--demo-dusk)">SIGHASH</span>
-        </div>
-      </div>
-
-      <div id="grind-explanation" class="demo-note small"></div>
+    <div>
+      <span class="demo-stat-value" id="grind-tries">&mdash;</span>
+      <span class="demo-stat-label">signing attempts</span>
     </div>
   </div>
+
+  <div class="demo-legend">
+    <span class="is-quiet">DER structure</span>
+    <span class="is-r"><em>r</em></span>
+    <span class="is-s"><em>s</em></span>
+    <span class="is-pad">padding / dropped</span>
+  </div>
+
+  <div class="demo-hex" id="grind-hex"></div>
+  <div class="demo-note" id="grind-note"></div>
 </div>
 
 <script>
 (function () {
-  function randBytes(n) {
-    const a = new Uint8Array(n);
-    crypto.getRandomValues(a);
-    return a;
+  function randBytes(n) { var a = new Uint8Array(n); crypto.getRandomValues(a); return a; }
+  function h2(b) { return b.toString(16).padStart(2, '0'); }
+
+  // DER encodes r as a signed big-endian integer with no redundant leading
+  // zero, so the length of the encoded r depends entirely on its top bytes.
+  function encodedRLen(r) {
+    if (r[0] === 0x00) return r[1] >= 0x80 ? 32 : 31;   // leading zero stripped, maybe re-added
+    return r[0] >= 0x80 ? 33 : 32;                       // 0x00 prepended to keep it positive
   }
 
-  function signECDSA(mode) {
-    let r, attempts = 0, needsPad = false, droppedTopByte = false, rLen = 32, sigLen = 72;
-    
+  function sign(mode) {
+    var r, rLen, tries = 0;
     do {
       r = randBytes(32);
-      attempts++;
-      
-      // DER encoding rules for the integer r
-      if (r[0] === 0x00) {
-        if (r[1] >= 0x80) {
-          // DER drops r[0], but r[1] >= 0x80 puts a 0x00 back -> rLen = 32
-          needsPad = true;
-          droppedTopByte = false;
-          rLen = 32;
-        } else {
-          // DER elimina r[0] totalmente y no requiere padding -> rLen = 31!
-          needsPad = false;
-          droppedTopByte = true;
-          rLen = 31;
-        }
-      } else if (r[0] >= 0x80) {
-        needsPad = true;
-        droppedTopByte = false;
-        rLen = 33;
-      } else {
-        needsPad = false;
-        droppedTopByte = false;
-        rLen = 32;
-      }
-
-      sigLen = 1 + 1 + (2 + rLen + 2 + 32) + 1; // 0x30 + len + payload DER + sighash
-
-      if (mode === 'low-r' && sigLen <= 71) break;
-      if (mode === 'extreme' && sigLen === 70) break;
+      tries++;
+      rLen = encodedRLen(r);
       if (mode === 'standard') break;
-    } while (attempts < 2500);
+      if (mode === 'low-r' && rLen <= 32) break;
+      if (mode === 'drop-byte' && rLen === 31) break;
+    } while (tries < 5000);
 
-    // BIP-62 low-s: always 32 bytes, never needs padding
-    const s = randBytes(32);
-    s[0] = s[0] & 0x7f;
+    var s = randBytes(32);
+    s[0] &= 0x7f;                       // BIP-62 low-s never needs padding
     if (s[0] === 0) s[0] = 0x01;
 
-    return { r, s, needsPad, droppedTopByte, rLen, sigLen, attempts, mode };
+    return { r: r, s: s, rLen: rLen, tries: tries, sigLen: 6 + rLen + 32 + 1 };
   }
 
-  function byte(hex, title, bg, fg) {
-    // Styling lives in .demo-byte (_sass/_demos.scss); only the role colour
-    // varies per byte, so that is all we set inline.
-    return '<span class="demo-byte" title="' + title + '" style="background:' + bg +
-      (fg ? ';color:' + fg : '') + '">' + hex + '</span>';
+  function cell(hex, cls, title) {
+    return '<span class="demo-byte' + (cls ? ' demo-byte--' + cls : '') +
+      '" title="' + title + '">' + hex + '</span>';
   }
 
-  function renderDER(sig) {
-    const { r, s, needsPad, droppedTopByte, rLen } = sig;
-    const totalLen = 2 + rLen + 2 + 32;
-    let h = '';
-    
-    h += byte('30', 'SEQUENCE tag', 'var(--demo-stone)');
-    h += byte(totalLen.toString(16).padStart(2, '0'), 'Total DER length: ' + totalLen + ' bytes', 'var(--demo-stone)');
-    h += byte('02', 'INTEGER tag (r)', 'var(--demo-orange)');
-    h += byte(rLen.toString(16).padStart(2, '0'), 'r length: ' + rLen + ' bytes', 'var(--demo-orange)');
-    
-    if (needsPad) {
-      h += byte('00', 'DER padding: r[0] >= 0x80, so a 0x00 keeps it from reading as negative', 'var(--demo-brick)');
-      Array.from(r).forEach((b, i) => {
-        h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']', 'var(--demo-orange)');
-      });
-    } else if (droppedTopByte) {
-      h += byte('~~', 'r[0] was 0x00, so DER drops it entirely (r < 2^248)', 'var(--demo-amber)');
-      Array.from(r.slice(1)).forEach((b, i) => {
-        h += byte(b.toString(16).padStart(2, '0'), 'r[' + (i + 1) + ']', 'var(--demo-orange)');
-      });
+  function render(sig) {
+    var r = sig.r, rLen = sig.rLen, out = '';
+    out += cell('30', '', 'SEQUENCE') + cell(h2(4 + rLen + 32), '', 'total length');
+    out += cell('02', '', 'INTEGER (r)') + cell(h2(rLen), '', 'r is ' + rLen + ' bytes');
+
+    if (rLen === 33) {
+      out += cell('00', 'pad', 'r[0] >= 0x80, so DER prepends 0x00');
+      for (var i = 0; i < 32; i++) out += cell(h2(r[i]), 'r', 'r[' + i + ']');
+    } else if (rLen === 31) {
+      out += cell('00', 'dropped', 'r[0] was 0x00 and r[1] < 0x80, so DER drops it');
+      for (var j = 1; j < 32; j++) out += cell(h2(r[j]), 'r', 'r[' + j + ']');
     } else {
-      Array.from(r).forEach((b, i) => {
-        h += byte(b.toString(16).padStart(2, '0'), 'r[' + i + ']', 'var(--demo-orange)');
-      });
+      for (var k = 0; k < 32; k++) out += cell(h2(r[k]), 'r', 'r[' + k + ']');
     }
 
-    h += byte('02', 'INTEGER tag (s)', 'var(--demo-green)');
-    h += byte('20', 's length: 32 bytes (BIP-62 low-s)', 'var(--demo-green)');
-    Array.from(s).forEach((b, i) => {
-      h += byte(b.toString(16).padStart(2, '0'), 's[' + i + ']', 'var(--demo-green)');
+    out += cell('02', '', 'INTEGER (s)') + cell('20', '', 's is 32 bytes');
+    for (var m = 0; m < 32; m++) out += cell(h2(sig.s[m]), 's', 's[' + m + ']');
+    out += cell('01', '', 'SIGHASH_ALL');
+    return out;
+  }
+
+  var NOTES = {
+    33: '<code>r[0] &ge; 0x80</code>. DER reads integers as two&rsquo;s complement, so the encoder ' +
+        'prepends <code>0x00</code> to stop it being negative. 72 bytes, one attempt, no work done.',
+    32: '<code>r &lt; 2<sup>255</sup></code>, so the high bit is clear and no padding byte is needed. ' +
+        '71 bytes for a mean of two signing attempts. This is what Core has done since v0.17.0.',
+    31: '<code>r &lt; 2<sup>248</sup></code>, so the top byte is <code>0x00</code> and DER drops it ' +
+        'outright. 70 bytes, but the mean cost jumps to ~256 attempts and a wallet emitting these ' +
+        'would be the loudest fingerprint on the chain.'
+  };
+
+  function run(mode, btn) {
+    document.querySelectorAll('#grind-demo .demo-mode').forEach(function (b) {
+      b.classList.toggle('is-active', b === btn);
     });
-    h += byte('01', 'SIGHASH_ALL', 'var(--demo-dusk)');
-    return h;
-  }
-
-  function updateUI(sig) {
-    const lenBadge = document.getElementById('grind-badge-len');
-    const attBadge = document.getElementById('grind-badge-attempts');
-    const privBadge = document.getElementById('grind-badge-privacy');
-    const expDiv = document.getElementById('grind-explanation');
-
-    lenBadge.textContent = sig.sigLen + ' bytes';
-    attBadge.textContent = sig.attempts + (sig.attempts === 1 ? ' try' : ' tries');
-
-    if (sig.sigLen === 70) {
-      lenBadge.className = 'demo-badge demo-badge--warn';
-      privBadge.className = 'demo-badge demo-badge--bad';
-      privBadge.textContent = 'Unique fingerprint';
-      expDiv.innerHTML = '<strong>70 bytes, extreme grind.</strong> The top byte of $r$ came out zero ($r < 2^{248}$), so DER dropped it. That is one more witness byte saved, worth 0.25 vbytes, for ' + sig.attempts + ' signing attempts, and it makes your software stand out on the chain.';
-    } else if (sig.sigLen === 71) {
-      lenBadge.className = 'demo-badge demo-badge--good';
-      privBadge.className = 'demo-badge';
-      privBadge.textContent = 'Common';
-      expDiv.innerHTML = '<strong>71 bytes, low-r.</strong> The high bit of $r$ is clear, so there is no `0x00` padding byte. This is what a modern wallet aims for, and it takes about two attempts.';
-    } else {
-      lenBadge.className = 'demo-badge';
-      privBadge.className = 'demo-badge';
-      privBadge.textContent = 'Common';
-      expDiv.innerHTML = '<strong>72 bytes, no grinding.</strong> $r$ came out high, so DER needs a leading `0x00`. This is what you get half the time if you sign once and keep it.';
-    }
-
-    document.getElementById('grind-der-viz').innerHTML = renderDER(sig);
-    document.getElementById('grind-output').style.display = '';
+    var sig = sign(mode);
+    document.getElementById('grind-len').textContent = sig.sigLen;
+    document.getElementById('grind-tries').textContent = sig.tries.toLocaleString();
+    document.getElementById('grind-hex').innerHTML = render(sig);
+    document.getElementById('grind-note').innerHTML = NOTES[sig.rLen];
   }
 
   function init() {
-    document.getElementById('grind-btn-std').addEventListener('click', () => updateUI(signECDSA('standard')));
-    document.getElementById('grind-btn-lowr').addEventListener('click', () => updateUI(signECDSA('low-r')));
-    document.getElementById('grind-btn-extreme').addEventListener('click', () => updateUI(signECDSA('extreme')));
+    var btns = document.querySelectorAll('#grind-demo .demo-mode');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { run(b.dataset.mode, b); });
+    });
+    run('standard', btns[0]);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 

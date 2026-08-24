@@ -47,37 +47,30 @@ That is not an oversight. It is the entire design.
 
 Change anything on the left and watch the hash. The fields at the bottom are the ones CTV never looks at: touch them and the hash stays exactly where it was.
 
-<div class="demo-card" id="ctv-tool">
-  <div class="card-body">
-    <h6 class="fw-bold mb-1">CTV template inspector</h6>
-    <p class="text-muted mb-3" style="font-size:0.85rem">
-      Every field below feeds a real <code>DefaultCheckTemplateVerifyHash</code>, computed in your
-      browser with SHA-256 exactly as BIP-119 specifies. Output scripts are zero-filled placeholders
-      of the right length, since only the length reaches the hash through the CTxOut prefix. The greyed
-      block at the bottom holds the fields CTV never hashes.
-    </p>
+<div class="demo-block" id="ctv-tool">
+    <h6 class="demo-heading">CTV template inspector</h6>
 
     <div class="ctv-grid">
       <div>
         <div class="ctv-group-title">Committed by the template</div>
 
-        <div class="ctv-row">
+        <div class="demo-field">
           <label for="ctv-version">nVersion</label>
           <input type="number" id="ctv-version" value="2" min="0" max="2147483647">
         </div>
-        <div class="ctv-row">
+        <div class="demo-field">
           <label for="ctv-locktime">nLockTime</label>
           <input type="number" id="ctv-locktime" value="0" min="0">
         </div>
-        <div class="ctv-row">
+        <div class="demo-field">
           <label for="ctv-sequence">nSequence</label>
           <input type="number" id="ctv-sequence" value="4294967293" min="0" max="4294967295">
         </div>
-        <div class="ctv-row">
+        <div class="demo-field">
           <label for="ctv-count">input_count</label>
           <input type="number" id="ctv-count" value="1" min="1" max="5">
         </div>
-        <div class="ctv-row">
+        <div class="demo-field">
           <label for="ctv-index">input_index</label>
           <input type="number" id="ctv-index" value="0" min="0" max="4">
         </div>
@@ -85,23 +78,23 @@ Change anything on the left and watch the hash. The fields at the bottom are the
         <div class="ctv-outputs-head">
           <span>outputs</span>
           <span>
-            <button class="demo-btn ctv-mini" id="ctv-out-remove" title="Remove an output">&minus;</button>
-            <button class="demo-btn ctv-mini" id="ctv-out-add" title="Add an output">+</button>
+            <button class="demo-mode ctv-mini" id="ctv-out-remove" title="Remove an output">&minus;</button>
+            <button class="demo-mode ctv-mini" id="ctv-out-add" title="Add an output">+</button>
           </span>
         </div>
         <div id="ctv-outputs"></div>
 
         <div class="ctv-group-title ctv-group-title--muted">Not committed &mdash; CTV never sees these</div>
         <div class="ctv-uncommitted">
-          <div class="ctv-row">
+          <div class="demo-field">
             <label for="ctv-txid">input txid</label>
             <input type="text" id="ctv-txid" value="9f2c…a10b" maxlength="20">
           </div>
-          <div class="ctv-row">
+          <div class="demo-field">
             <label for="ctv-vout">input vout</label>
             <input type="number" id="ctv-vout" value="0" min="0">
           </div>
-          <div class="ctv-row">
+          <div class="demo-field">
             <label for="ctv-inamount">input amount (BTC)</label>
             <input type="number" id="ctv-inamount" value="1.0" min="0" step="0.01">
           </div>
@@ -111,13 +104,13 @@ Change anything on the left and watch the hash. The fields at the bottom are the
 
       <div>
         <div class="ctv-group-title">What gets hashed</div>
-        <div id="ctv-preimage" class="ctv-bytes"></div>
-        <div class="demo-legend mt-2" id="ctv-legend">
-          <span class="demo-badge" style="background:var(--demo-stone)">counts</span>
-          <span class="demo-badge" style="background:var(--demo-orange)">version / locktime</span>
-          <span class="demo-badge" style="background:var(--demo-dusk)">sha256(sequences)</span>
-          <span class="demo-badge" style="background:var(--demo-green)">sha256(outputs)</span>
-          <span class="demo-badge" style="background:var(--demo-amber)">input_index</span>
+        <div id="ctv-preimage" class="demo-hex"></div>
+        <div class="demo-legend" id="ctv-legend">
+          <span class="is-quiet">counts</span>
+          <span class="is-r">version / locktime</span>
+          <span class="is-quiet">sha256(sequences)</span>
+          <span class="is-s">sha256(outputs)</span>
+          <span class="is-pad">input_index</span>
         </div>
 
         <div class="ctv-group-title mt-3">Template hash</div>
@@ -128,42 +121,32 @@ Change anything on the left and watch the hash. The fields at the bottom are the
         <div id="ctv-verdict" class="ctv-verdict"></div>
       </div>
     </div>
-  </div>
 </div>
 
 <style>
-#ctv-tool .ctv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+#ctv-tool .ctv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 @media (max-width: 700px) { #ctv-tool .ctv-grid { grid-template-columns: 1fr; } }
-#ctv-tool .ctv-group-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
-  color: var(--global-text-color-light); margin-bottom: 0.45rem; font-weight: 600; }
-#ctv-tool .ctv-group-title--muted { margin-top: 1rem; }
-#ctv-tool .ctv-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
-#ctv-tool .ctv-row label { flex: 0 0 46%; font-size: 0.8rem; font-family: var(--bs-font-monospace, monospace); }
-#ctv-tool input { flex: 1 1 auto; min-width: 0; padding: 0.15rem 0.4rem; font-size: 0.8rem;
-  border: 1px solid var(--global-divider-color); border-radius: 3px;
-  background: var(--global-bg-color); color: var(--global-text-color); }
-#ctv-tool select { padding: 0.15rem 0.3rem; font-size: 0.78rem; border: 1px solid var(--global-divider-color);
-  border-radius: 3px; background: var(--global-bg-color); color: var(--global-text-color); }
+#ctv-tool .ctv-group-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--global-text-color-light); margin-bottom: 0.7rem; font-weight: 600; }
+#ctv-tool .ctv-group-title--muted { margin-top: 1.6rem; }
 #ctv-tool .ctv-outputs-head { display: flex; justify-content: space-between; align-items: center;
-  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
-  color: var(--global-text-color-light); margin: 0.8rem 0 0.35rem; }
-#ctv-tool .ctv-mini { padding: 0 0.45rem; font-size: 0.85rem; line-height: 1.4; }
-#ctv-tool .ctv-out { display: flex; gap: 0.35rem; margin-bottom: 0.3rem; align-items: center; }
-#ctv-tool .ctv-out input { flex: 1 1 40%; }
-#ctv-tool .ctv-uncommitted { padding: 0.5rem 0.6rem; border-radius: 4px;
-  border: 1px dashed var(--global-divider-color); background: var(--demo-surface); opacity: 0.92; }
-#ctv-tool .ctv-hint { font-size: 0.74rem; color: var(--global-text-color-light); margin-top: 0.4rem; }
-#ctv-tool .ctv-bytes { font-family: var(--bs-font-monospace, monospace); line-height: 2.0;
-  word-break: break-all; font-size: 0.72rem; }
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600;
+  color: var(--global-text-color-light); margin: 1.4rem 0 0.7rem; }
+#ctv-tool .ctv-mini { padding: 0.1rem 0.6rem; font-size: 0.9rem; border: 1px solid var(--demo-rule);
+  border-radius: 4px; margin-left: 0.25rem; }
+#ctv-tool .ctv-out { display: flex; gap: 0.6rem; margin-bottom: 0.5rem; align-items: center; }
+#ctv-tool .ctv-out input, #ctv-tool .ctv-out select { flex: 1 1 40%; min-width: 0; padding: 0.2rem 0.45rem;
+  border: 0; border-bottom: 1px solid var(--demo-rule); background: transparent;
+  color: var(--global-text-color); font-family: inherit; font-size: 0.8rem; }
+#ctv-tool .ctv-uncommitted { padding: 0.9rem 1rem; border-radius: 4px; background: var(--demo-surface); }
+#ctv-tool .ctv-hint { font-size: 0.75rem; color: var(--global-text-color-light); margin-top: 0.6rem; }
 #ctv-tool .ctv-field-label { display: block; font-size: 0.68rem; color: var(--global-text-color-light);
-  margin-top: 0.35rem; font-family: var(--bs-font-monospace, monospace); }
-#ctv-tool .ctv-hash { font-family: var(--bs-font-monospace, monospace); font-size: 0.78rem;
-  word-break: break-all; padding: 0.45rem 0.55rem; border-radius: 4px;
-  background: var(--demo-surface); border-left: 3px solid var(--demo-orange); }
-#ctv-tool .ctv-hash.ctv-flash { border-left-color: var(--demo-green); transition: none; }
-#ctv-tool .ctv-verdict { font-size: 0.82rem; padding: 0.45rem 0.55rem; border-radius: 4px; }
-#ctv-tool .ctv-ok { background: var(--demo-surface); border-left: 3px solid var(--demo-green); }
-#ctv-tool .ctv-bad { background: var(--demo-surface); border-left: 3px solid var(--demo-brick); }
+  margin-top: 0.7rem; letter-spacing: 0.04em; }
+#ctv-tool .ctv-hash { font-family: var(--bs-font-monospace, ui-monospace, monospace); font-size: 0.78rem;
+  word-break: break-all; line-height: 1.9; padding-left: 0.9rem; border-left: 2px solid var(--demo-r); }
+#ctv-tool .ctv-verdict { font-size: 0.83rem; line-height: 1.6; padding-left: 0.9rem;
+  border-left: 2px solid var(--demo-s); }
+#ctv-tool .ctv-verdict.is-bad { border-left-color: var(--demo-pad); }
 </style>
 
 <script>
@@ -197,8 +180,8 @@ Change anything on the left and watch the hash. The fields at the bottom are the
   }
   function hex(bytes) { return bytes.map(h2).join(''); }
 
-  function chip(bytes, color, title) {
-    return '<span class="demo-byte" style="background:' + color + '" title="' + title + '">' +
+  function chip(bytes, cls, title) {
+    return '<span class="demo-byte' + (cls ? ' demo-byte--' + cls : '') + '" title="' + title + '">' +
       hex(bytes) + '</span>';
   }
 
@@ -246,13 +229,13 @@ Change anything on the left and watch the hash. The fields at the bottom are the
 
     // BIP-119 field order. sha256(scriptSigs) is omitted: every scriptSig is empty here.
     var fields = [
-      { b: u32le(version), c: 'var(--demo-orange)', n: 'nVersion' },
-      { b: u32le(locktime), c: 'var(--demo-orange)', n: 'nLockTime' },
-      { b: u32le(count), c: 'var(--demo-stone)', n: 'input_count' },
-      { b: seqHash, c: 'var(--demo-dusk)', n: 'sha256(sequences)' },
-      { b: u32le(outputs.length), c: 'var(--demo-stone)', n: 'output_count' },
-      { b: outHash, c: 'var(--demo-green)', n: 'sha256(outputs)' },
-      { b: u32le(index), c: 'var(--demo-amber)', n: 'input_index' }
+      { b: u32le(version), c: 'r', n: 'nVersion' },
+      { b: u32le(locktime), c: 'r', n: 'nLockTime' },
+      { b: u32le(count), c: '', n: 'input_count' },
+      { b: seqHash, c: '', n: 'sha256(sequences)' },
+      { b: u32le(outputs.length), c: '', n: 'output_count' },
+      { b: outHash, c: 's', n: 'sha256(outputs)' },
+      { b: u32le(index), c: 'pad', n: 'input_index' }
     ];
 
     var preimage = [], html = '';
@@ -270,7 +253,7 @@ Change anything on the left and watch the hash. The fields at the bottom are the
     if (lastHash !== null) {
       if (digest === lastHash && committed === lastCommitted) {
         el('ctv-hash-state').innerHTML =
-          '<strong style="color:var(--demo-green)">Hash unchanged.</strong> You edited a field CTV does not commit to.';
+          '<strong style="color:var(--demo-s)">Hash unchanged.</strong> That field is not committed.';
       } else {
         el('ctv-hash-state').textContent = 'Hash changed: that field is part of the template.';
       }
@@ -282,12 +265,12 @@ Change anything on the left and watch the hash. The fields at the bottom are the
     var outTotal = outputs.reduce(function (a, o) { return a + o.amount; }, 0);
     var v = el('ctv-verdict');
     if (outTotal > inAmount) {
-      v.className = 'ctv-verdict ctv-bad';
+      v.className = 'ctv-verdict is-bad';
       v.innerHTML = '<strong>Unsatisfiable.</strong> The template demands ' + outTotal.toFixed(8) +
         ' BTC of outputs from a ' + inAmount.toFixed(8) + ' BTC input. Every transaction that satisfies ' +
         'the covenant creates bitcoins, so none of them is valid. This coin can never move.';
     } else {
-      v.className = 'ctv-verdict ctv-ok';
+      v.className = 'ctv-verdict';
       v.innerHTML = '<strong>Spendable.</strong> Outputs total ' + outTotal.toFixed(8) + ' BTC against a ' +
         inAmount.toFixed(8) + ' BTC input, leaving ' + (inAmount - outTotal).toFixed(8) + ' BTC of fee.';
     }
