@@ -232,7 +232,12 @@ That matters here because a signature in a legacy input sits in the *scriptSig*,
 
 **mainnet.observer** counts signatures but does not say which kind of input each one came from, so I had to do an approximation. Every day I splitted the signatures between *scriptSig* and *witness* in proportion to the *legacy* and *SegWit v0* inputs spent that day.  
 
-Taproot inputs are left out, since they carry Schnorr signatures, not ECDSA.[^taproot]
+Taproot inputs are left out, since they carry Schnorr signatures, not ECDSA.
+
+> ##### Note
+>
+> A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$, written out as they are. There is no DER wrapper, so no length prefixes, no `INTEGER` tags and no sign bit to pad around. A leading `0x00` cannot arise, which means there is no low-$r$, no high-$r$ and no byte to grind. Taproot spends contribute to neither column here, saved or missed.
+{: .block-tip }
 
 So the 5.09 GiB saved is not 5.09 GiB of block space. Most of those were witness bytes:
 
@@ -463,12 +468,8 @@ That gap is the actual lesson, and it is not about bytes:
 
 Low-$r$ grinding has been available, documented and free-as-in-code for eight years, and two thirds of Bitcoin's ECDSA signatures still come from signers that don't use it. If your wallet signs ECDSA and doesn't grind, there are six days of block space with your name on it.
 
-And Taproot? You can't run any of this on it. A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$, with no DER wrapper, no length prefixes and no sign bit to pad around.[^schnorr] The `0x00` this whole post is about cannot exist there, so there is no low-$r$, no high-$r$ and nothing to grind.
+And Taproot? You can't run any of this on it. A BIP-340 signature is a flat **64 bytes**, 32 for $R_x$ and 32 for $s$, with no DER wrapper, no length prefixes and no sign bit to pad around. The `0x00` this whole post is about cannot exist there, so there is no low-$r$, no high-$r$ and nothing to grind.
 
 Which makes the follow-up a different question, and a better one: not how many bytes wallets ground away, but how many bytes Bitcoin saved by making them impossible to waste. That's the post I want to write next!
 
 <sub>*All data from [mainnet.observer](https://mainnet.observer) by [0xB10C](https://b10c.me), which does the hard part: parsing every block since 2009.*</sub>
-
-[^taproot]: A BIP-340 signature is a flat **64 bytes**: 32 for $R_x$ and 32 for $s$, written out as they are. There is no DER wrapper, so no length prefixes, no `INTEGER` tags and no sign bit to work around. A leading `0x00` cannot arise, which means there is no low-$r$, no high-$r$ and no byte to grind away. Taproot spends contribute nothing to either column of this accounting, saved or missed, so leaving them out is not an approximation but the correct treatment.
-
-[^schnorr]: 65 bytes if the spender wants a sighash type other than `SIGHASH_DEFAULT`, since BIP-341 appends the flag byte only in that case. Still fixed-length, still nothing to grind.
