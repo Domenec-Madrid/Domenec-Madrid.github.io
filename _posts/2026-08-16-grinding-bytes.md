@@ -224,8 +224,6 @@ So low values have kept **5.09 GiB** off the chain, and another **1.35 GiB** wen
 
 <small>\* 2026 is partial, through August 16th.</small>
 
-### Not All Bytes Weigh The Same
-
 Since [SegWit](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki), not every byte takes up the same amount of a block. A block holds 4,000,000 *weight units* and a byte in the base transaction costs 4 of them, a byte in the witness costs 1. Divide weight by four and you get *vbytes*, so a base byte is 1 vbyte and a witness byte is only **0.25**.
 
 That matters here because a signature in a legacy input sits in the *scriptSig*, which is base data, while a signature in a *SegWit* input sits in the witness.
@@ -247,25 +245,62 @@ So the 5.09 GiB saved is not 5.09 GiB of block space. Most of those were witness
 
 A block holds one million vbytes and a new one arrives every ten minutes, which turns any pile of vbytes into an amount of time. The saved side comes to **3,293 blocks**, about three weeks of chain. The missed side comes to **969 blocks**, close to a week.
 
-#### What is still on the table
+Counting only $r$, it is **906 blocks** of block space, more than six days.
 
-That missed week is the number I keep coming back to, and almost all of it is $r$: **906 blocks** of block space, more than six days, sitting in `0x00` bytes that a second signing attempt would have removed. The remaining 63 blocks are high-$s$, which stopped happening in 2016 and is now a rounding error.
+### How Much Of That Was Really Grinding?
 
-It is not history either. High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in August 2026 low-$r$ is at 68.3%, so roughly **one signature in three still isn't ground**.
+Everything above counts bytes that never reached the chain, and they are saved whatever the reason. But $r$ comes out low half the time by luck, so not all of them were paid for by anybody.
 
-That share also says how much software grinds at all, which is the bleaker number. A wallet that grinds emits a low $r$ essentially every time; one that doesn't lands there half the time by luck. So if $p$ is the share of signatures coming from grinders:
+Say a year has 1,000 signatures and 700 are low-$r$. With nobody grinding you would still expect 500, so only the extra 200 are down to grinding:
 
-$$0.682 = p + \tfrac{1}{2}(1 - p) \implies p = 0.364$$
+$$
+\text{bytes from grinding} = \text{low-}r - \frac{\text{signatures}}{2}
+$$
 
-Only about **36% of signatures come from software that grinds**. The remaining two thirds are not wallets missing a byte here and there, they are wallets that never grind at all. Even at the December 2022 peak of 70.2%, grinders were barely over 40%.
+Over the whole history that gives **338,026,197 bytes, about 322 MiB**. The other 1.6 GiB of low-$r$ savings would have happened on their own. The same maths on $s$, where the alternative to luck is negating, gives **1,667,061,192 bytes, about 1.55 GiB**.
 
-Some of that is unfixable: old software, exotic signers, HSMs that will not re-sign. The rest is wallets that could ship a four-line change.
+One catch: the formula credits grinding for any excess, including the excess luck put there. So the tool also measures how far the excess sits from chance. If every signature were a fair coin, that excess would have a standard deviation of $\sqrt{N}/2$; dividing one by the other gives a $\sigma$ count, and anything under 3 is what a coin does on a good day.
 
-## The grind nobody does
+| period | bytes from grinding | $\sigma$ from chance |
+| --- | ---: | ---: |
+| 2009–2013 | 0 | −0.3 |
+| 2014 | 23,772 | 6 |
+| 2015 | 2,104,158 | 363 |
+| 2016 | 1,592,323 | 208 |
+| 2017 | 1,283,103 | 151 |
+| 2018 | 1,117,404 | 139 |
+| 2019 | 20,419,318 | 2,384 |
+| 2020 | 44,262,638 | 4,891 |
+| 2021 | 56,178,700 | 6,134 |
+| 2022 | 60,701,680 | 6,665 |
+| 2023 | 50,067,230 | 5,826 |
+| 2024 | 38,042,050 | 4,366 |
+| 2025 | 33,467,800 | 3,799 |
+| 2026\* | 28,767,298 | 3,976 |
 
-There is one more byte down there. Grind until $r < 2^{248}$, so the top byte of $r$ is zero and DER drops it entirely, and you save a second byte per signature: another **3.22 GiB** across all history, about two thirds of everything low values have saved so far.
+That column splits the history in three.
 
-Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emitting 70-byte ECDSA signatures would be the loudest fingerprint on the chain. The byte you save is not always worth the identity you spend.
+**2009–2013 is luck.** The excess never reaches one $\sigma$, and it is slightly negative, so those five years bought nothing at all.
+
+**2019 onward is grinding.** Thousands of $\sigma$. There is no other way to read it.
+
+**2014–2018 I cannot explain.** About 6 MiB over five years, but sitting at 139 to 363 $\sigma$, so it is not luck either, and it starts four years before v0.17.0. Something was already biased towards low $r$ before grinding shipped. Maybe a big service with its own signing code, maybe the signatures are less independent than a fair-coin model needs.
+
+I would rather flag that than explain it away. What I will defend is the split: **98.2% of the 322 MiB comes from 2019 onward**, once v0.17.0 was out.
+
+High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in August 2026 low-$r$ is at 68.3%, so roughly **one signature in three still isn't ground**.
+
+That means that only about **36% of signatures come from software that grinds**.  
+
+## How to Grind Even a Little “Byte” More
+
+There is actually one more byte we could save.
+
+If we kept grinding until $r < 2^{248}$, the first byte of $r$ would be `0x00`. DER could then drop it entirely, saving a second byte from every signature. Had this been done throughout Bitcoin's history, it would have saved another **3.22 GiB**, about two thirds of what low values have saved so far.
+
+But! There is a reason nobody does it. Finding a regular low-$r$ value takes about two signing attempts on average. Finding one below $2^{248}$ would take about 256, making your signing device considerably slow every time you sign something.  
+
+Furthermore, I am not aware of any device that implements this technique. If only one device did it, its unusually short signatures would make it easy to fingerprint on-chain.
 
 <div class="demo-block" id="grind-demo">
   <h6 class="demo-heading">ECDSA signature grinding</h6>
@@ -396,47 +431,6 @@ Nobody does it. The cost goes from ~2 signing attempts to ~256, and a wallet emi
   else init();
 })();
 </script>
-
-## How much of that was really grinding?
-
-Everything above counts bytes that never reached the chain, and they are saved whatever the reason. But $r$ comes out low half the time by luck, so not all of them were paid for by anybody.
-
-Say a year has 1,000 signatures and 700 are low-$r$. With nobody grinding you would still expect 500, so only the extra 200 are down to grinding:
-
-$$
-\text{bytes from grinding} = \text{low-}r - \frac{\text{signatures}}{2}
-$$
-
-Over the whole history that gives **338,026,197 bytes, about 322 MiB**. The other 1.6 GiB of low-$r$ savings would have happened on their own. The same maths on $s$, where the alternative to luck is negating, gives **1,667,061,192 bytes, about 1.55 GiB**.
-
-One catch: the formula credits grinding for any excess, including the excess luck put there. So the tool also measures how far the excess sits from chance. If every signature were a fair coin, that excess would have a standard deviation of $\sqrt{N}/2$; dividing one by the other gives a $\sigma$ count, and anything under 3 is what a coin does on a good day.
-
-| period | bytes from grinding | $\sigma$ from chance |
-| --- | ---: | ---: |
-| 2009–2013 | 0 | −0.3 |
-| 2014 | 23,772 | 6 |
-| 2015 | 2,104,158 | 363 |
-| 2016 | 1,592,323 | 208 |
-| 2017 | 1,283,103 | 151 |
-| 2018 | 1,117,404 | 139 |
-| 2019 | 20,419,318 | 2,384 |
-| 2020 | 44,262,638 | 4,891 |
-| 2021 | 56,178,700 | 6,134 |
-| 2022 | 60,701,680 | 6,665 |
-| 2023 | 50,067,230 | 5,826 |
-| 2024 | 38,042,050 | 4,366 |
-| 2025 | 33,467,800 | 3,799 |
-| 2026\* | 28,767,298 | 3,976 |
-
-That column splits the history in three.
-
-**2009–2013 is luck.** The excess never reaches one $\sigma$, and it is slightly negative, so those five years bought nothing at all.
-
-**2019 onward is grinding.** Thousands of $\sigma$. There is no other way to read it.
-
-**2014–2018 I cannot explain.** About 6 MiB over five years, but sitting at 139 to 363 $\sigma$, so it is not luck either, and it starts four years before v0.17.0. Something was already biased towards low $r$ before grinding shipped. Maybe a big service with its own signing code, maybe the signatures are less independent than a fair-coin model needs.
-
-I would rather flag that than explain it away. What I will defend is the split: **98.2% of the 322 MiB comes from 2019 onward**, once v0.17.0 was out.
 
 ## Run it yourself
 
