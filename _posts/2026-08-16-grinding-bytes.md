@@ -248,8 +248,6 @@ Counting only $r$, it is **906 blocks** of block space, more than six days.
 
 High-$r$ signatures burned another **24.8 blocks** during 2026 alone, and in August 2026 low-$r$ is at 68.3%, so roughly **one signature in three still isn't ground**.
 
-That means that (this year) only about **36% of signatures come from software that grinds**.
-
 ### How Much Of That Was Really Grinding?
 
 Every low-$r$ signature saved a byte, but half of them would have been low anyway. The ones that count are the ones above that halfway line:
@@ -262,7 +260,23 @@ Out of $N = 3{,}459{,}841{,}248$ signatures, high-$r$ and low-$r$ together, chan
 
 $$2{,}067{,}946{,}821 - 1{,}729{,}920{,}624 = 338{,}026{,}197 \text{ signatures}$$
 
-were made low deliberately. At one byte saved each that is **322 MiB**, against the **1.93 GiB** low-$r$ has saved in total. Grinding accounts for **~16% of the low-$r$ savings**.
+were made low deliberately. At one byte saved each that is **322 MiB**, against the **1.93 GiB** low-$r$ has saved in total.
+
+$$\frac{338{,}026{,}197}{2{,}067{,}946{,}821} = 0.163$$
+
+So grinding accounts for **~16% of the low-$r$ savings**. The other 84% was going to happen with nobody doing anything.
+
+We can also infer some information about wallets...
+
+A wallet that grinds always ends up with a low $r$, because it keeps signing until it gets one. A wallet that does not grind gets a low $r$ half the time anyway, out of pure luck. So if nobody ground, the chain would sit at 50%. If everybody ground, it would sit at 100%. Anything in between is a mix of the two.
+
+In August 2026 the chain sits at 68.3%. That is 18.3 points above the 50% that luck hands you for free, out of the 50 points that grinding could possibly add on top.
+
+$$\frac{68.3 - 50}{100 - 50} = \frac{18.3}{50} = 0.366$$
+
+So **roughly 36% of signatures come from software that grinds**.
+
+This is a guess and not a measurement. It assumes a wallet either grinds every time or never grinds at all, and that the ones that don't are a fair coin.
 
 ## How to Grind Even a Little “Byte” More
 
