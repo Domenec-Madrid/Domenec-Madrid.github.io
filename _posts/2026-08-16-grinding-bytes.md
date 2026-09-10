@@ -284,9 +284,9 @@ There is actually one more byte we could save.
 
 If we kept grinding until $r < 2^{248}$, the first byte of $r$ would be `0x00`. DER could then drop it entirely, saving a second byte from every signature. Had this been done throughout Bitcoin's history, it would have saved another **3.22 GiB**, about two thirds of what low values have saved so far.
 
-But! There is a reason nobody does it. Finding a regular low-$r$ value takes about two signing attempts on average. Finding one below $2^{248}$ would take about 256, making your signing device considerably slower every time you sign something.  
+But! There is a reason nobody does it, and (I think) is not really the cost. I am not aware of any device that does this, and a wallet that was the only one doing it would sign every transaction with an unusually short, unusually rare signature. That makes it really easy to fingerprint, since anyone watching can tell which software produced it.
 
-Furthermore, I am not aware of any device that implements this technique. If only one device did it, its unusually short signatures would make it easy to fingerprint on-chain.
+Finding a regular low-$r$ value takes about two signing attempts on average. Finding one below $2^{248}$ pins 8 more bits to zero (256 − 248), so it takes about $2^8 = 256$. This on your laptop would not be noticeable although I would want to try it on a hardware wallet just to check if the delay of signing a transaction would be important.
 
 <div class="demo-block" id="grind-demo">
   <h6 class="demo-heading">ECDSA signature grinding</h6>
