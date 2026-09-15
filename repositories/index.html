@@ -18,21 +18,76 @@
     }
   </script> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <link rel="stylesheet" href="/assets/css/bootstrap.min.css?v=a4b3f509e79c54a512b890d73235ef04"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="/assets/css/academicons.min.css?v=f0b7046b84e425c55f3463ac249818f5"> <link defer rel="stylesheet" href="/assets/css/scholar-icons.css?v=62b2ac103a88034e6882a5be5f3e2772"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="/assets/img/icon.png?v=3c51817928d01b6aefe3a5dddc124936"> <link rel="stylesheet" href="/assets/css/main.css?v=d41d8cd98f00b204e9800998ecf8427e"> <link rel="canonical" href="https://domenec-madrid.github.io/repositories/"> <script src="/assets/js/theme.js?v=5fea5159b787642c1bbc1f334d60f883"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
     initTheme();
-  </script> </head> <body class="fixed-top-nav "> <div class="mountains" aria-hidden="true"> <div class="mountain-layer mountain-layer--1"></div> <div class="mountain-layer mountain-layer--2"></div> <div class="mountain-layer mountain-layer--3"></div> <div class="mountain-layer mountain-layer--4"></div> </div> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Domènec</span> Madrid </a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/" data-text="About">About </a> </li> <li class="nav-item "> <a class="nav-link" href="/blog/" data-text="Blog">Blog </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/" data-text="Publications">Publications </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/" data-text="Projects">Projects </a> </li> <li class="nav-item active"> <a class="nav-link" href="/repositories/" data-text="Repositories">Repositories <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/" data-text="CV">CV </a> </li> <li class="nav-item "> <a class="nav-link" href="/contact/" data-text="Contact">Contact </a> </li> <li class="nav-item "> <a class="nav-link" href="/books/" data-text="Books">Books </a> </li> <li class="nav-item"> <button id="search-toggle" title="Search" onclick="openSearchModal()"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Repositories</h1> <p class="post-description"></p> </header> <article> <h2 id="recent-activity">Recent Activity</h2> <div class="activity-feed" id="activity-feed-1" data-github-user="Dmenec"> <div class="activity-user-heading"> <img src="https://github.com/Dmenec.png?size=56" alt="Dmenec" loading="lazy"> <a href="https://github.com/Dmenec" rel="external nofollow noopener" target="_blank">@Dmenec</a> </div> <div class="activity-loading">Loading recent activity…</div> </div> <script>
+  </script> </head> <body class="fixed-top-nav "> <div class="mountains" aria-hidden="true"> <div class="mountain-layer mountain-layer--1"></div> <div class="mountain-layer mountain-layer--2"></div> <div class="mountain-layer mountain-layer--3"></div> <div class="mountain-layer mountain-layer--4"></div> </div> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Domènec</span> Madrid </a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/" data-text="About">About </a> </li> <li class="nav-item "> <a class="nav-link" href="/blog/" data-text="Blog">Blog </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/" data-text="Publications">Publications </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/" data-text="Projects">Projects </a> </li> <li class="nav-item active"> <a class="nav-link" href="/repositories/" data-text="Repositories">Repositories <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/" data-text="CV">CV </a> </li> <li class="nav-item "> <a class="nav-link" href="/contact/" data-text="Contact">Contact </a> </li> <li class="nav-item "> <a class="nav-link" href="/books/" data-text="Books">Books </a> </li> <li class="nav-item"> <button id="search-toggle" title="Search" onclick="openSearchModal()"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Repositories</h1> <p class="post-description"></p> </header> <article> <h2 id="github-profile">GitHub Profile</h2> <div class="gh-profiles"> <div class="gh-profile-card" data-gh-user="Dmenec"> <img class="gh-profile-avatar" src="https://github.com/Dmenec.png?size=128" alt="Dmenec" loading="lazy"> <div> <div class="gh-profile-name">Dmenec</div> <a class="gh-profile-handle" href="https://github.com/Dmenec" target="_blank" rel="noopener">@Dmenec</a> <p class="gh-profile-bio gh-loading">Loading profile…</p> </div> </div> </div> <h2 id="repositories">Repositories</h2> <div class="gh-repos" id="gh-repos"> <a class="gh-repo-card" href="https://github.com/Dmenec/BTC-Labnet" target="_blank" rel="noopener" data-gh-repo="Dmenec/BTC-Labnet"> <div class="gh-repo-name"> <i class="fa-solid fa-code-branch"></i>BTC-Labnet</div> <p class="gh-repo-desc gh-loading">Loading…</p> </a> </div> <h2 id="open-source-contributions">Open Source Contributions</h2> <div class="gh-contrib-section" data-gh-contrib-user="Dmenec"> <p class="gh-loading">Loading contributions…</p> </div> <script>
 (function () {
-  // PurgeCSS scans the built site for literal class names, so every class
-  // used below is spelled out here in full rather than built by
-  // concatenation (see _sass/_demos.scss for the same rule).
-  var ITEM_CLASS = {
-    merged: 'activity-item activity-item--merged',
-    openPr: 'activity-item activity-item--open-pr',
-    openIssue: 'activity-item activity-item--open-issue'
+  // PurgeCSS scans the built site for literal class names, so classes are
+  // spelled out here rather than assembled by concatenation (see
+  // _sass/_demos.scss for the same rule and why it matters).
+  var LANG_COLORS = {
+    Rust: '#dea584',
+    'C++': '#f34b7d',
+    C: '#555555',
+    Python: '#3572A5',
+    JavaScript: '#f1e05a',
+    TypeScript: '#3178c6',
+    Shell: '#89e051',
+    Dockerfile: '#384d54',
+    HTML: '#e34c26',
+    CSS: '#563d7c',
+    Go: '#00ADD8'
   };
 
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
+  function loadProfile(card) {
+    var username = card.dataset.ghUser;
+    fetch('https://api.github.com/users/' + encodeURIComponent(username))
+      .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+      .then(function (u) {
+        var bio = card.querySelector('.gh-profile-bio');
+        bio.classList.remove('gh-loading');
+        bio.textContent = u.bio || '';
+        var stats = document.createElement('div');
+        stats.className = 'gh-profile-stats';
+        stats.innerHTML =
+          '<span><i class="fa-solid fa-book"></i>' + u.public_repos + ' repositories</span>' +
+          '<span><i class="fa-solid fa-user-group"></i>' + u.followers + ' followers</span>';
+        card.querySelector('div').appendChild(stats);
+      })
+      .catch(function () {
+        var bio = card.querySelector('.gh-profile-bio');
+        bio.classList.remove('gh-loading');
+        bio.className = 'gh-error';
+        bio.textContent = "Couldn't load GitHub profile data right now.";
+      });
+  }
+
+  function loadRepo(card) {
+    var repo = card.dataset.ghRepo;
+    fetch('https://api.github.com/repos/' + repo)
+      .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+      .then(function (r) {
+        var desc = card.querySelector('.gh-repo-desc');
+        desc.classList.remove('gh-loading');
+        desc.textContent = r.description || '';
+
+        var meta = document.createElement('div');
+        meta.className = 'gh-repo-meta';
+        var langHtml = '';
+        if (r.language) {
+          var color = LANG_COLORS[r.language] || null;
+          langHtml = '<span class="gh-repo-lang"><span class="gh-lang-dot"' +
+            (color ? ' style="background:' + color + '"' : '') + '></span>' + r.language + '</span>';
+        }
+        meta.innerHTML = langHtml +
+          '<span><i class="fa-regular fa-star"></i>' + r.stargazers_count + '</span>' +
+          '<span><i class="fa-solid fa-code-fork"></i>' + r.forks_count + '</span>';
+        card.appendChild(meta);
+      })
+      .catch(function () {
+        var desc = card.querySelector('.gh-repo-desc');
+        desc.classList.remove('gh-loading');
+        desc.className = 'gh-error';
+        desc.textContent = "Couldn't load repository data right now.";
+      });
   }
 
   function timeAgo(iso) {
@@ -51,70 +106,64 @@
     return parts[parts.length - 2] + '/' + parts[parts.length - 1];
   }
 
-  function itemRow(item, cls, label) {
-    return '<a class="' + cls + '" href="' + item.html_url + '" target="_blank" rel="noopener">' +
-      '<span class="activity-item-title">' + escapeHtml(item.title) + '</span>' +
-      '<span class="activity-item-meta">' + escapeHtml(repoOf(item)) + ' #' + item.number +
-      ' &middot; ' + label + '</span></a>';
-  }
-
-  function columnHtml(items, emptyText) {
-    if (!items.length) return '<p class="activity-empty">' + emptyText + '</p>';
-    return '<ul class="activity-list">' + items.map(function (h) { return '<li>' + h + '</li>'; }).join('') + '</ul>';
-  }
-
-  function render(container, items) {
-    var merged = [], open = [];
-    items.forEach(function (item) {
-      var isPr = !!item.pull_request;
-      if (isPr && item.pull_request.merged_at) {
-        merged.push(itemRow(item, ITEM_CLASS.merged, 'merged ' + timeAgo(item.pull_request.merged_at)));
-      } else if (item.state === 'open') {
-        var cls = isPr ? ITEM_CLASS.openPr : ITEM_CLASS.openIssue;
-        var kind = isPr ? 'PR' : 'issue';
-        open.push(itemRow(item, cls, kind + ' updated ' + timeAgo(item.updated_at)));
-      }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
-    merged = merged.slice(0, 6);
-    open = open.slice(0, 6);
-
-    container.innerHTML =
-      '<div class="activity-columns">' +
-        '<div class="activity-column activity-column--merged">' +
-          '<div class="activity-column-title"><span class="activity-dot"></span>Recently merged</div>' +
-          columnHtml(merged, 'Nothing merged recently.') +
-        '</div>' +
-        '<div class="activity-column activity-column--open">' +
-          '<div class="activity-column-title"><span class="activity-dot"></span>Open right now</div>' +
-          columnHtml(open, 'Nothing open right now.') +
-        '</div>' +
-      '</div>';
   }
 
-  function renderError(container, username, rateLimited) {
-    var msg = rateLimited
-      ? "GitHub's public API rate limit was hit just now."
-      : "Couldn't reach the GitHub API right now.";
-    container.innerHTML = '<p class="activity-error">' + msg + ' <a href="https://github.com/' +
-      username + '?tab=activity" target="_blank" rel="noopener">See the activity on GitHub instead</a>.</p>';
+  function contribCard(item, cardClass, icon, label) {
+    return '<a class="' + cardClass + '" href="' + item.html_url +
+      '" target="_blank" rel="noopener">' +
+      '<span class="gh-contrib-title">' + escapeHtml(item.title) + '</span>' +
+      '<span class="gh-contrib-meta"><i class="' + icon + '"></i>' +
+      escapeHtml(repoOf(item)) + ' #' + item.number + ' &middot; ' + label + '</span></a>';
   }
 
-  function load(container) {
-    var username = container.dataset.githubUser;
+  function contribGroup(items, headingClass, icon, heading, emptyText) {
+    var body = items.length
+      ? '<div class="gh-contribs">' + items.join('') + '</div>'
+      : '<p class="gh-loading" style="animation:none">' + emptyText + '</p>';
+    return '<div class="gh-contrib-group">' +
+      '<div class="gh-contrib-heading ' + headingClass + '"><i class="' + icon + '"></i>' + heading + '</div>' +
+      body + '</div>';
+  }
+
+  function loadContributions(container) {
+    var username = container.dataset.ghContribUser;
     fetch('https://api.github.com/search/issues?q=author:' + encodeURIComponent(username) +
           '&sort=updated&order=desc&per_page=30', { headers: { Accept: 'application/vnd.github+json' } })
-      .then(function (res) {
-        if (!res.ok) { renderError(container, username, res.status === 403); return null; }
-        return res.json();
-      })
+      .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
       .then(function (data) {
-        if (data) render(container, data.items || []);
+        var merged = [], open = [];
+        (data.items || []).forEach(function (item) {
+          var isPr = !!item.pull_request;
+          if (isPr && item.pull_request.merged_at) {
+            merged.push(contribCard(item, 'gh-contrib-card gh-contrib-card--merged', 'fa-solid fa-code-merge',
+              'merged ' + timeAgo(item.pull_request.merged_at)));
+          } else if (item.state === 'open') {
+            var icon = isPr ? 'fa-solid fa-code-pull-request' : 'fa-regular fa-circle-dot';
+            open.push(contribCard(item, 'gh-contrib-card gh-contrib-card--open', icon,
+              (isPr ? 'PR' : 'issue') + ' updated ' + timeAgo(item.updated_at)));
+          }
+        });
+        container.innerHTML =
+          contribGroup(merged.slice(0, 6), 'gh-contrib-heading--merged', 'fa-solid fa-code-merge',
+            'Recently merged', 'Nothing merged recently.') +
+          contribGroup(open.slice(0, 6), 'gh-contrib-heading--open', 'fa-solid fa-circle-check',
+            'Open right now', 'Nothing open right now.');
       })
-      .catch(function () { renderError(container, username, false); });
+      .catch(function () {
+        container.innerHTML = '<p class="gh-error">Couldn\'t load contribution data right now. ' +
+          '<a href="https://github.com/' + username + '?tab=activity" target="_blank" rel="noopener">' +
+          'See the activity on GitHub instead</a>.</p>';
+      });
   }
 
-  document.querySelectorAll('.activity-feed[data-github-user]').forEach(load);
+  document.querySelectorAll('.gh-profile-card[data-gh-user]').forEach(loadProfile);
+  document.querySelectorAll('.gh-repo-card[data-gh-repo]').forEach(loadRepo);
+  document.querySelectorAll('.gh-contrib-section[data-gh-contrib-user]').forEach(loadContributions);
 })();
-</script> <h2 id="github-users">GitHub Users</h2> <div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center"> <div class="repo p-2 text-center"> <a href="https://github.com/Dmenec" rel="external nofollow noopener" target="_blank"> <img class="only-light w-100" alt="Dmenec" src="https://github-readme-stats.vercel.app/api/?username=Dmenec&amp;theme=default&amp;locale=en&amp;show_icons=true"> <img class="only-dark w-100" alt="Dmenec" src="https://github-readme-stats.vercel.app/api/?username=Dmenec&amp;theme=dark&amp;locale=en&amp;show_icons=true"> </a> </div> </div> <div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center"> <div class="repo p-2 text-center"> <a href="https://github.com/ryo-ma/github-profile-trophy" rel="external nofollow noopener" target="_blank"> <span class="d-none d-sm-none d-md-block"> <img class="only-light" alt="Dmenec" src="https://github-profile-trophy.vercel.app/?username=Dmenec&amp;theme=flat&amp;locale=en&amp;margin-w=15&amp;margin-h=15&amp;no-bg=true&amp;rank=-C&amp;column=6"> <img class="only-dark" alt="Dmenec" src="https://github-profile-trophy.vercel.app/?username=Dmenec&amp;theme=gitdimmed&amp;locale=en&amp;margin-w=15&amp;margin-h=15&amp;no-bg=true&amp;rank=-C&amp;column=6"> </span> <span class="d-none d-sm-block d-md-none"> <img class="only-light" alt="Dmenec" src="https://github-profile-trophy.vercel.app/?username=Dmenec&amp;theme=flat&amp;locale=en&amp;margin-w=15&amp;margin-h=15&amp;no-bg=true&amp;rank=-C&amp;column=4"> <img class="only-dark" alt="Dmenec" src="https://github-profile-trophy.vercel.app/?username=Dmenec&amp;theme=gitdimmed&amp;locale=en&amp;margin-w=15&amp;margin-h=15&amp;no-bg=true&amp;rank=-C&amp;column=4"> </span> <span class="d-block d-sm-none"> <img class="only-light" alt="Dmenec" src="https://github-profile-trophy.vercel.app/?username=Dmenec&amp;theme=flat&amp;locale=en&amp;margin-w=15&amp;margin-h=15&amp;no-bg=true&amp;rank=-C&amp;column=3"> <img class="only-dark" alt="Dmenec" src="https://github-profile-trophy.vercel.app/?username=Dmenec&amp;theme=gitdimmed&amp;locale=en&amp;margin-w=15&amp;margin-h=15&amp;no-bg=true&amp;rank=-C&amp;column=3"> </span> </a> </div> </div> <h2 id="github-repositories">GitHub Repositories</h2> <div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center"> <div class="repo p-2 text-center"> <a href="https://github.com/Dmenec/BTC-Labnet" rel="external nofollow noopener" target="_blank"> <img class="only-light w-100" alt="Dmenec/BTC-Labnet" src="https://github-readme-stats.vercel.app/api/pin/?username=Dmenec&amp;repo=BTC-Labnet&amp;theme=default&amp;locale=en&amp;show_owner=false&amp;description_lines_count=2"> <img class="only-dark w-100" alt="Dmenec/BTC-Labnet" src="https://github-readme-stats.vercel.app/api/pin/?username=Dmenec&amp;repo=BTC-Labnet&amp;theme=dark&amp;locale=en&amp;show_owner=false&amp;description_lines_count=2"> </a> </div> </div> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Domènec Madrid . Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Last updated: September 15, 2026. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="/assets/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=a0db7e5d5c70cc3252b3138b0c91dcaf" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js?v=85ddb88934d28b74e78031fd54cf8308"></script> <script src="/assets/js/no_defer.js?v=2781658a0a2b13ed609542042a859126"></script> <script defer src="/assets/js/common.js?v=c15de51d4bb57887caa2c21988d97279"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=d9f17b6adc2311cbabd747f4538bb15f"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/js/mathjax-setup.js?v=a5bb4e6a542c546dd929b24b8b236dfd"></script> <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script> <script async src="https://www.googletagmanager.com/gtag/js?id=G-JKC4FDV7JF"></script> <script defer src="/assets/js/google-analytics-setup.js"></script> <script defer src="/assets/js/progress-bar.js?v=2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script> <script src="/assets/js/vanilla-back-to-top.min.js?v=f40d453793ff4f64e238e420181a1d17"></script> <script>
+</script> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Domènec Madrid . Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Last updated: September 15, 2026. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="/assets/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=a0db7e5d5c70cc3252b3138b0c91dcaf" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js?v=85ddb88934d28b74e78031fd54cf8308"></script> <script src="/assets/js/no_defer.js?v=2781658a0a2b13ed609542042a859126"></script> <script defer src="/assets/js/common.js?v=c15de51d4bb57887caa2c21988d97279"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=d9f17b6adc2311cbabd747f4538bb15f"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/js/mathjax-setup.js?v=a5bb4e6a542c546dd929b24b8b236dfd"></script> <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script> <script async src="https://www.googletagmanager.com/gtag/js?id=G-JKC4FDV7JF"></script> <script defer src="/assets/js/google-analytics-setup.js"></script> <script defer src="/assets/js/progress-bar.js?v=2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script> <script src="/assets/js/vanilla-back-to-top.min.js?v=f40d453793ff4f64e238e420181a1d17"></script> <script>
     addBackToTop();
   </script> <script type="module" src="/assets/js/search/ninja-keys.min.js?v=a3446f084dcaecc5f75aa1757d087dcf"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/js/search-setup.js?v=6c304f7b1992d4b60f7a07956e52f04a"></script> <script src="/assets/js/search-data.js"></script> <script src="/assets/js/shortcut-key.js?v=ccc841c459bfc0e64c1c2b5acd10df02"></script> </body> </html>
