@@ -104,7 +104,7 @@ A lot of the value came from other people poking holes in the approach: performa
 
 ## Where it stands
 
-The trust redesign and the wallet delegation are open and under review, the confirmation primitive is open, and the `locked` category is open as a draft follow-up. The one hard dependency is release ordering: `bdk_wallet` builds against a published `bdk_chain`, so the wallet pieces are gated on the chain change shipping first. Next up are time-based timelocks and a future frozen/reserved category for coins the user locks manually.
+**Update, September 2026:** the trust redesign (#2246) and the confirmation primitive (#2263) are merged into `bdk`'s main branch. Neither has shipped in a `bdk_chain` release yet, so the wallet delegation and the `locked` category, both in `bdk_wallet`, stay open as drafts until one does: `bdk_wallet` builds against a published `bdk_chain`, and that's the one hard dependency. Next up are time-based timelocks and a future frozen/reserved category for coins the user locks manually.
 
 ## What else?
 
