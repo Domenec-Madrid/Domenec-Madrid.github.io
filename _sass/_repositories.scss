@@ -1,0 +1,150 @@
+/*******************************************************************************
+ * Repositories page — live GitHub activity
+ *
+ * Reuses the demo palette (_demos.scss): --demo-s (green) reads as "done",
+ * --demo-r (orange) as "in progress", --demo-quiet as neutral. Same tokens,
+ * same accessibility fix, no new colour system to keep consistent.
+ *
+ * Layout follows the site's existing convention: hairlines and a left
+ * accent bar, no card shadows or boxes.
+ ******************************************************************************/
+
+.activity-feed {
+  margin: 1.5rem 0 2.5rem;
+}
+
+.activity-user-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+
+  img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+
+  a {
+    font-weight: 600;
+  }
+}
+
+.activity-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 2.5rem;
+}
+
+@media (max-width: 700px) {
+  .activity-columns {
+    grid-template-columns: 1fr;
+    gap: 1.75rem 0;
+  }
+}
+
+.activity-column-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+}
+
+.activity-column-title .activity-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentcolor;
+  flex-shrink: 0;
+}
+
+.activity-column--merged .activity-column-title {
+  color: var(--demo-s);
+}
+.activity-column--open .activity-column-title {
+  color: var(--demo-r);
+}
+
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activity-item {
+  display: block;
+  padding: 0.55rem 0 0.55rem 0.85rem;
+  border-left: 2px solid var(--demo-rule);
+  margin-bottom: 0.35rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s;
+
+  &:hover {
+    text-decoration: none;
+    background: var(--demo-surface);
+  }
+}
+
+.activity-item--merged {
+  border-left-color: var(--demo-s);
+}
+.activity-item--open-pr,
+.activity-item--open-issue {
+  border-left-color: var(--demo-r);
+}
+
+.activity-item-title {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--global-text-color);
+  line-height: 1.35;
+}
+
+.activity-item-meta {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.74rem;
+  color: var(--global-text-color-light);
+  font-family: var(--bs-font-monospace, ui-monospace, monospace);
+}
+
+.activity-empty,
+.activity-error {
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+  padding-left: 0.85rem;
+}
+
+.activity-error {
+  border-left: 2px solid var(--demo-pad);
+}
+
+/* Simple pulsing placeholder while the GitHub API responds. */
+.activity-loading {
+  padding-left: 0.85rem;
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+  animation: activity-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes activity-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-loading {
+    animation: none;
+  }
+}
