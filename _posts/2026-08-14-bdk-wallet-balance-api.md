@@ -55,6 +55,290 @@ The main assumption would be: *only trust owned inputs*.
 | **Untrusted** | Somewhere in that history it pulls in coins that aren't yours | Whoever controls those coins can still replace the transaction |
 | **Unknown** | The wallet can't see far enough back | A history you can't verify isn't safe, so it falls back to untrusted |
 
+<div class="demo-block" id="bt-slides" tabindex="0" aria-roledescription="carousel" aria-label="Old and new trust rule, explained with Alice and Bob">
+    <svg class="bt-defs" width="0" height="0" aria-hidden="true">
+      <defs>
+        <g id="bt-alice">
+          <circle cx="20" cy="12" r="10"/>
+          <path d="M20 22 V48 M4 32 H36 M20 48 L8 70 M20 48 L32 70 M9 9 Q3 22 8 31 M31 9 Q37 22 32 31"/>
+        </g>
+        <g id="bt-bob">
+          <circle cx="20" cy="12" r="10"/>
+          <path d="M20 22 V48 M4 32 H36 M20 48 L8 70 M20 48 L32 70 M7 3 H33 M13 3 V-6 H27 V3"/>
+        </g>
+        <!-- Rules with an ancestor in the selector don't reach <use> copies, so these carry their own styles. -->
+        <g id="bt-coin">
+          <circle r="14"/>
+          <text y="5.5" style="stroke: none; fill: currentColor; font-size: 16px; font-weight: 600; text-anchor: middle;">₿</text>
+        </g>
+        <g id="bt-wallet">
+          <text x="535" y="22" style="stroke: none; fill: var(--global-text-color-light); font-size: 16px; text-anchor: middle;">Alice's wallet</text>
+          <rect x="450" y="32" width="170" height="200" rx="10" style="stroke: var(--demo-quiet);"/>
+          <rect x="465" y="48" width="140" height="76" rx="6" style="stroke: var(--demo-quiet);"/>
+          <rect x="465" y="140" width="140" height="76" rx="6" style="stroke: var(--demo-quiet);"/>
+          <text x="474" y="65" style="stroke: none; fill: var(--global-text-color-light); font-size: 14px;">receive</text>
+          <text x="474" y="157" style="stroke: none; fill: var(--global-text-color-light); font-size: 14px;">change</text>
+        </g>
+      </defs>
+    </svg>
+
+    <div class="bt-stage">
+      <div class="bt-slide is-active">
+        <div class="bt-kicker">Old rule</div>
+        <div class="bt-title">Trust depends on the drawer</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="An unknown sender pays into either drawer of Alice's wallet. The receive drawer is stamped untrusted and the change drawer is stamped trusted.">
+          <use href="#bt-wallet"/>
+          <use href="#bt-bob" class="bt-fig bt-anyone" x="40" y="105"/>
+          <text class="bt-t bt-t--light" x="60" y="197" text-anchor="middle">anyone</text>
+          <path class="bt-line" d="M95 141 H300 M300 95 V187 M300 95 H459 m-8 -5 l8 5 l-8 5 M300 187 H459 m-8 -5 l8 5 l-8 5"/>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="535" y="95"/>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="535" y="187"/>
+          <g class="bt-stamp bt-bad" transform="translate(672 95) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">UNTRUSTED</text></g>
+          <g class="bt-stamp bt-ok" transform="translate(672 187) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">TRUSTED</text></g>
+        </svg>
+        <div class="bt-cap">Alice's wallet has two drawers: <strong>receive</strong> addresses she hands out, and <strong>change</strong> addresses the wallet uses for itself. The old rule only looked at which drawer an unconfirmed coin landed in. It never asked who sent it.</div>
+      </div>
+
+      <div class="bt-slide">
+        <div class="bt-kicker">Old rule · bug #16</div>
+        <div class="bt-title">Bob pays into the change drawer</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="Bob sends an unconfirmed transaction to one of Alice's change addresses. The old rule stamps the coin as trusted.">
+          <use href="#bt-wallet"/>
+          <use href="#bt-bob" class="bt-fig bt-bob" x="40" y="151"/>
+          <text class="bt-t" x="60" y="243" text-anchor="middle">Bob</text>
+          <text class="bt-t bt-t--small" x="160" y="176" text-anchor="middle">his coins</text>
+          <path class="bt-line" d="M95 187 H224 m-8 -5 l8 5 l-8 5 M335 187 H459 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-line bt-dashed" x="230" y="165" width="100" height="44" rx="6"/>
+          <text class="bt-t" x="280" y="192" text-anchor="middle">tx</text>
+          <text class="bt-t bt-t--small" x="280" y="228" text-anchor="middle">unconfirmed</text>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="535" y="187"/>
+          <text class="bt-t bt-t--small" x="672" y="163" text-anchor="middle">old rule</text>
+          <g class="bt-stamp bt-ok" transform="translate(672 187) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">TRUSTED</text></g>
+        </svg>
+        <div class="bt-cap">Change addresses show up on-chain like any other, so nothing stops Bob from paying one. The old rule sees "change" and counts the coin as <strong>trusted</strong>, even though Alice had no part in the transaction.</div>
+      </div>
+
+      <div class="bt-slide">
+        <div class="bt-kicker">Old rule · bug #16</div>
+        <div class="bt-title">Bob takes it back</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="Bob replaces his transaction with one that pays himself. The original is crossed out and the coin in Alice's change drawer disappears.">
+          <use href="#bt-wallet"/>
+          <use href="#bt-bob" class="bt-fig bt-bob" x="40" y="151"/>
+          <text class="bt-t" x="60" y="243" text-anchor="middle">Bob</text>
+          <text class="bt-t bt-t--small" x="200" y="64" text-anchor="middle">replacement, higher fee</text>
+          <path class="bt-line" d="M60 138 V97 H144 m-8 -5 l8 5 l-8 5 M255 97 H298 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-line" x="150" y="75" width="100" height="44" rx="6"/>
+          <text class="bt-t" x="200" y="102" text-anchor="middle">tx'</text>
+          <use href="#bt-coin" class="bt-fig bt-bob" x="318" y="97"/>
+          <text class="bt-t bt-t--small" x="340" y="102">Bob's again</text>
+          <path class="bt-quiet bt-dashed" d="M95 187 H224 M335 187 H459"/>
+          <rect class="bt-quiet bt-dashed" x="230" y="165" width="100" height="44" rx="6"/>
+          <text class="bt-t bt-t--light" x="280" y="192" text-anchor="middle">tx</text>
+          <path class="bt-cross" d="M240 171 L320 203 M320 171 L240 203"/>
+          <circle class="bt-quiet bt-dashed" cx="535" cy="187" r="14"/>
+          <path class="bt-cross" d="M523 175 L547 199 M547 175 L523 199"/>
+          <g class="bt-stamp bt-bad" transform="translate(672 187) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">GONE</text></g>
+        </svg>
+        <div class="bt-cap">Bob signed the transaction, so Bob can replace it (RBF) with one that pays himself. The original never confirms and the coin vanishes. Alice's "trusted" balance was money she never had: that is the Coke at the till.</div>
+      </div>
+
+      <div class="bt-slide">
+        <div class="bt-kicker">Old rule · bug #273</div>
+        <div class="bt-title">Alice pays herself, and isn't trusted</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="Alice sends her own coins to one of her receive addresses. The old rule stamps the coin as untrusted.">
+          <use href="#bt-wallet"/>
+          <use href="#bt-alice" class="bt-fig bt-alice" x="40" y="59"/>
+          <text class="bt-t" x="60" y="151" text-anchor="middle">Alice</text>
+          <text class="bt-t bt-t--small" x="160" y="84" text-anchor="middle">her coins</text>
+          <path class="bt-line" d="M95 95 H224 m-8 -5 l8 5 l-8 5 M335 95 H459 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-line bt-dashed" x="230" y="73" width="100" height="44" rx="6"/>
+          <text class="bt-t" x="280" y="100" text-anchor="middle">tx</text>
+          <text class="bt-t bt-t--small" x="280" y="136" text-anchor="middle">unconfirmed</text>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="535" y="95"/>
+          <text class="bt-t bt-t--small" x="672" y="71" text-anchor="middle">old rule</text>
+          <g class="bt-stamp bt-bad" transform="translate(672 95) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">UNTRUSTED</text></g>
+        </svg>
+        <div class="bt-cap">Now the opposite mistake. Alice consolidates her own coins into one of her receive addresses. Only she can sign a replacement, so this is as safe as an unconfirmed coin gets. The old rule sees "receive" and calls it <strong>untrusted</strong>.</div>
+      </div>
+
+      <div class="bt-slide">
+        <div class="bt-kicker bt-kicker--new">New rule</div>
+        <div class="bt-title">Ask who funded it</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="The wallet walks back from the coin to the transaction that funded it and finds only Alice's coins. The coin is stamped trusted.">
+          <use href="#bt-wallet"/>
+          <use href="#bt-alice" class="bt-fig bt-alice" x="40" y="59"/>
+          <text class="bt-t" x="60" y="151" text-anchor="middle">Alice</text>
+          <text class="bt-t bt-t--small" x="160" y="84" text-anchor="middle">her coins</text>
+          <path class="bt-line" d="M95 95 H224 m-8 -5 l8 5 l-8 5 M335 95 H459 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-line bt-dashed" x="230" y="73" width="100" height="44" rx="6"/>
+          <text class="bt-t" x="280" y="100" text-anchor="middle">tx</text>
+          <path class="bt-walk bt-ok" d="M447 116 C 390 185, 190 185, 104 126"/>
+          <path class="bt-walk-head bt-ok" d="M108 136 L104 126 L115 126"/>
+          <text class="bt-t bt-t--small bt-ok" x="275" y="196" text-anchor="middle">walk back: only Alice's coins</text>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="535" y="95"/>
+          <text class="bt-t bt-t--small" x="672" y="71" text-anchor="middle">new rule</text>
+          <g class="bt-stamp bt-ok" transform="translate(672 95) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">TRUSTED</text></g>
+        </svg>
+        <div class="bt-cap">The new rule ignores the drawer. The wallet walks back through the coin's unconfirmed history, and if every input along the way is Alice's, nobody else can replace anything. <strong>Trusted</strong>, whichever drawer it landed in.</div>
+      </div>
+
+      <div class="bt-slide">
+        <div class="bt-kicker bt-kicker--new">New rule</div>
+        <div class="bt-title">One input from Bob taints what follows</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="Bob pays Alice in transaction A, and Alice spends that coin to her change drawer in transaction B. The walk back reaches Bob's transaction and the coin is stamped untrusted.">
+          <use href="#bt-wallet"/>
+          <use href="#bt-bob" class="bt-fig bt-bob" x="16" y="151"/>
+          <text class="bt-t" x="36" y="243" text-anchor="middle">Bob</text>
+          <path class="bt-line" d="M70 187 H114 m-8 -5 l8 5 l-8 5 M195 187 H230 m-8 -5 l8 5 l-8 5 M272 187 H309 m-8 -5 l8 5 l-8 5 M390 187 H459 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-line bt-dashed bt-bad" x="120" y="165" width="70" height="44" rx="6"/>
+          <text class="bt-t" x="155" y="192" text-anchor="middle">tx A</text>
+          <text class="bt-t bt-t--small bt-bad" x="155" y="228" text-anchor="middle">Bob can replace</text>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="251" y="187"/>
+          <rect class="bt-line bt-dashed" x="315" y="165" width="70" height="44" rx="6"/>
+          <text class="bt-t" x="350" y="192" text-anchor="middle">tx B</text>
+          <text class="bt-t bt-t--small" x="350" y="228" text-anchor="middle">Alice signed</text>
+          <path class="bt-walk bt-bad" d="M447 166 C 400 95, 220 95, 160 156"/>
+          <path class="bt-walk-head bt-bad" d="M171 153 L160 156 L163 145"/>
+          <text class="bt-t bt-t--small bt-bad" x="300" y="98" text-anchor="middle">walk back: finds Bob</text>
+          <use href="#bt-coin" class="bt-fig bt-alice" x="535" y="187"/>
+          <text class="bt-t bt-t--small" x="672" y="163" text-anchor="middle">new rule</text>
+          <g class="bt-stamp bt-bad" transform="translate(672 187) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">UNTRUSTED</text></g>
+        </svg>
+        <div class="bt-cap">Bob pays Alice (tx A), then Alice moves that coin to her own change (tx B). Tx B is all hers, but it stands on tx A, and if Bob replaces A then B falls with it. The walk reaches Bob's input and marks the coin <strong>untrusted</strong>. A history the wallet can't see gets the same answer.</div>
+      </div>
+
+      <div class="bt-slide">
+        <div class="bt-kicker bt-kicker--new">Old vs new</div>
+        <div class="bt-title">Same coins, right buckets</div>
+        <svg viewBox="0 0 730 250" role="img" aria-label="Summary. Bob paying Alice's change address: the old rule said trusted, the new rule says untrusted. Alice paying her own receive address: the old rule said untrusted, the new rule says trusted.">
+          <text class="bt-t bt-t--small" x="420" y="18" text-anchor="middle">old rule</text>
+          <text class="bt-t bt-t--small" x="610" y="18" text-anchor="middle">new rule</text>
+          <use href="#bt-bob" class="bt-fig bt-bob" x="30" y="32"/>
+          <text class="bt-t" x="50" y="124" text-anchor="middle">Bob</text>
+          <path class="bt-line" d="M85 68 H164 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-quiet" x="170" y="48" width="120" height="40" rx="6"/>
+          <text class="bt-t" x="230" y="73" text-anchor="middle">change</text>
+          <g class="bt-stamp bt-ok bt-old" transform="translate(420 68) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">TRUSTED</text><path d="M-52 0 H52"/></g>
+          <g class="bt-stamp bt-bad" transform="translate(610 68) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">UNTRUSTED</text></g>
+          <use href="#bt-alice" class="bt-fig bt-alice" x="30" y="142"/>
+          <text class="bt-t" x="50" y="234" text-anchor="middle">Alice</text>
+          <path class="bt-line" d="M85 178 H164 m-8 -5 l8 5 l-8 5"/>
+          <rect class="bt-quiet" x="170" y="158" width="120" height="40" rx="6"/>
+          <text class="bt-t" x="230" y="183" text-anchor="middle">receive</text>
+          <g class="bt-stamp bt-bad bt-old" transform="translate(420 178) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">UNTRUSTED</text><path d="M-52 0 H52"/></g>
+          <g class="bt-stamp bt-ok" transform="translate(610 178) rotate(-5)"><rect x="-44" y="-14" width="88" height="28" rx="5"/><text y="5">TRUSTED</text></g>
+        </svg>
+        <div class="bt-cap">The old rule got both cases backwards because the drawer says nothing about who can still replace the transaction. Following the money does: Bob's payment is <strong>untrusted</strong> until it confirms, and Alice's own coins are <strong>trusted</strong> wherever she sends them.</div>
+      </div>
+    </div>
+
+    <div class="bt-nav">
+      <button type="button" class="bt-btn" data-step="-1" aria-label="Previous slide">&larr;</button>
+      <div class="bt-dots"></div>
+      <span class="bt-count" aria-live="polite"></span>
+      <button type="button" class="bt-btn" data-step="1" aria-label="Next slide">&rarr;</button>
+    </div>
+</div>
+
+<style>
+#bt-slides { outline: none; }
+#bt-slides .bt-defs { position: absolute; }
+#bt-slides .bt-slide { margin-bottom: 2rem; }
+#bt-slides.is-ready .bt-stage { display: grid; }
+#bt-slides.is-ready .bt-slide { grid-area: 1 / 1; margin: 0; visibility: hidden; opacity: 0; transition: opacity 0.2s; }
+#bt-slides.is-ready .bt-slide.is-active { visibility: visible; opacity: 1; }
+#bt-slides .bt-kicker { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--demo-pad); }
+#bt-slides .bt-kicker--new { color: var(--demo-s); }
+#bt-slides .bt-title { font-size: 1.15rem; font-weight: 600; margin: 0.15rem 0 0.8rem; }
+#bt-slides .bt-slide svg { display: block; width: 100%; height: auto; }
+#bt-slides .bt-cap { margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.6; }
+
+#bt-slides svg * { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#bt-slides .bt-line { stroke: var(--global-text-color); }
+#bt-slides .bt-quiet { stroke: var(--demo-quiet); }
+#bt-slides .bt-dashed { stroke-dasharray: 5 5; }
+#bt-slides .bt-cross { stroke: var(--demo-pad); stroke-width: 3; }
+#bt-slides .bt-fig { stroke: currentColor; stroke-width: 2.5; }
+#bt-slides .bt-alice { color: var(--demo-r); }
+#bt-slides .bt-bob { color: var(--global-text-color); }
+#bt-slides .bt-anyone { color: var(--demo-quiet); }
+#bt-slides .bt-ok { color: var(--demo-s); }
+#bt-slides .bt-bad { color: var(--demo-pad); }
+#bt-slides rect.bt-bad { stroke: var(--demo-pad); }
+#bt-slides .bt-walk { stroke: currentColor; stroke-dasharray: 2 6; }
+#bt-slides .bt-walk-head { stroke: currentColor; }
+#bt-slides svg text { stroke: none; fill: var(--global-text-color); font-family: inherit; font-size: 16px; }
+#bt-slides svg text.bt-t--small { font-size: 14px; fill: var(--global-text-color-light); }
+#bt-slides svg text.bt-t--light { fill: var(--global-text-color-light); }
+#bt-slides svg text.bt-ok, #bt-slides svg text.bt-bad { fill: currentColor; }
+#bt-slides .bt-stamp rect { stroke: currentColor; }
+#bt-slides .bt-stamp text { fill: currentColor; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-anchor: middle; }
+#bt-slides .bt-stamp path { stroke: var(--global-text-color); }
+#bt-slides .bt-old { opacity: 0.55; }
+
+#bt-slides .bt-nav { display: none; align-items: center; gap: 0.9rem; margin-top: 1.3rem; }
+#bt-slides.is-ready .bt-nav { display: flex; }
+#bt-slides .bt-btn { padding: 0.3rem 0.9rem; border: 1px solid var(--demo-rule); border-radius: 6px; background: transparent;
+  color: var(--global-text-color); font-size: 1rem; line-height: 1.3; cursor: pointer; }
+#bt-slides .bt-btn:hover:not(:disabled) { background: var(--demo-surface); }
+#bt-slides .bt-btn:disabled { opacity: 0.35; cursor: default; }
+#bt-slides .bt-dots { display: flex; flex: 1 1 auto; justify-content: center; gap: 0.5rem; }
+#bt-slides .bt-dot { width: 0.6rem; height: 0.6rem; padding: 0; border: 0; border-radius: 50%; background: var(--demo-quiet);
+  opacity: 0.4; cursor: pointer; }
+#bt-slides .bt-dot.is-active { background: var(--demo-r); opacity: 1; }
+#bt-slides .bt-count { font-size: 0.75rem; color: var(--global-text-color-light); font-variant-numeric: tabular-nums; }
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById('bt-slides');
+  var slides = root.querySelectorAll('.bt-slide');
+  var buttons = root.querySelectorAll('.bt-btn');
+  var dots = root.querySelector('.bt-dots');
+  var count = root.querySelector('.bt-count');
+  var current = 0;
+
+  function show(i) {
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function (s, n) { s.classList.toggle('is-active', n === current); });
+    dots.querySelectorAll('.bt-dot').forEach(function (d, n) { d.classList.toggle('is-active', n === current); });
+    buttons[0].disabled = current === 0;
+    buttons[1].disabled = current === slides.length - 1;
+    count.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  slides.forEach(function (_, n) {
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'bt-dot';
+    d.setAttribute('aria-label', 'Go to slide ' + (n + 1));
+    d.addEventListener('click', function () { show(n); });
+    dots.appendChild(d);
+  });
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { show(current + parseInt(b.dataset.step, 10)); });
+  });
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { show(current - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { show(current + 1); e.preventDefault(); }
+  });
+
+  // Swipe on touch screens.
+  var startX = null;
+  root.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  root.addEventListener('touchend', function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    startX = null;
+  }, { passive: true });
+
+  root.classList.add('is-ready');
+  show(0);
+})();
+</script>
+
 That was difficult on two counts: first to arrive at this idea, and second to actually implement it in the code. We thought it could be a good idea to have it folded in the wallet, but we noticed there were some useful primitives to perform the walk in chain. Unfortunately we could not use them, so we ended up doing something "totally aside" from the project: a new API in `bdk_chain` that let us run complex closures over the chain's balance function, erasing generics and giving a clearer API to work with.
 
 Next I'll explain every change I made in the chain layer and the wallet layer.
