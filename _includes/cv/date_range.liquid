@@ -1,0 +1,40 @@
+{% comment %}
+  Formats a CV date range as "Mon YYYY – Mon YYYY" (or "– Present").
+  Takes include.start and include.end as YYYY or YYYY-MM strings and assigns
+  the result to `date`, which the calling template reads after the include.
+{% endcomment %}
+
+{% assign start_date = include.start | strip %}
+{% assign end_stripped = include.end | strip %}
+
+{% if start_date != '' %}
+  {% assign month_names = 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec' | split: ',' %}
+
+  {% assign start_parts = start_date | split: '-' %}
+  {% assign start_year = start_parts[0] %}
+  {% assign start_month_num = start_parts[1] %}
+  {% if start_month_num %}
+    {% assign start_month_index = start_month_num | minus: 1 %}
+    {% assign startDate = month_names[start_month_index] | append: ' ' | append: start_year %}
+  {% else %}
+    {% assign startDate = start_year %}
+  {% endif %}
+
+  {% if end_stripped == '' or end_stripped == 'present' or end_stripped == 'Present' %}
+    {% assign endDate = 'Present' %}
+  {% else %}
+    {% assign end_parts = end_stripped | split: '-' %}
+    {% assign end_year = end_parts[0] %}
+    {% assign end_month_num = end_parts[1] %}
+    {% if end_month_num %}
+      {% assign end_month_index = end_month_num | minus: 1 %}
+      {% assign endDate = month_names[end_month_index] | append: ' ' | append: end_year %}
+    {% else %}
+      {% assign endDate = end_year %}
+    {% endif %}
+  {% endif %}
+
+  {% assign date = startDate | append: ' – ' | append: endDate %}
+{% else %}
+  {% assign date = '' %}
+{% endif %}

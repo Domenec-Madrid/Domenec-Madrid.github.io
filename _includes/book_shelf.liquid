@@ -1,0 +1,81 @@
+{% comment %}
+  The book shelf: covers grouped by category. Reads page.collection,
+  page.display_categories and page.covers. Pass heading=h2/h3 to change the
+  level of the category titles (h1 by default).
+{% endcomment %}
+{% assign heading = include.heading | default: 'h1' %}
+
+{% if page.collection and page.collection.size > 0 %}
+  {% assign collection = site[page.collection] %}
+  {% if collection and collection.size > 0 %}
+    {% comment %}
+      Group the shelf by category. Categories listed in the page's `display_categories`
+      are rendered first and in that order; anything else falls in afterwards. Empty
+      categories are skipped, so a category only shows up once it has books in it.
+    {% endcomment %}
+    {% assign present = collection | map: 'category' | compact | uniq %}
+    {% assign ordered = '' | split: '' %}
+    {% for category in page.display_categories %}
+      {% if present contains category %}
+        {% assign one = category | split: '||' %}
+        {% assign ordered = ordered | concat: one %}
+      {% endif %}
+    {% endfor %}
+    {% for category in present %}
+      {% unless page.display_categories contains category %}
+        {% assign one = category | split: '||' %}
+        {% assign ordered = ordered | concat: one %}
+      {% endunless %}
+    {% endfor %}
+
+    {% for category in ordered %}
+      {% assign items = collection | where: 'category', category | sort: 'title' %}
+      <{{ heading }} id="{{ category | slugify }}">{{ category | capitalize }}</{{ heading }}>
+      <ul>
+        {% for item in items %}
+          <figure class="cover">
+            <a class="cover-link" href="{{ item.url | relative_url }}">
+              {% if item.cover %}
+                <img alt="{{ item.title }} cover" src="{{ item.cover | prepend: page.covers | relative_url }}" style="height:200px">
+              {% elsif item.olid %}
+                <img
+                  alt="{{ item.title }} cover"
+                  src="https://covers.openlibrary.org/b/olid/{{ item.olid }}-L.jpg?default=false"
+                  style="height:200px"
+                >
+              {% elsif item.isbn %}
+                <img
+                  alt="{{ item.title }} cover"
+                  src="https://covers.openlibrary.org/b/isbn/{{ item.isbn }}-L.jpg?default=false"
+                  style="height:200px"
+                >
+              {% else %}
+                {% comment %}
+                  No cover art available: fall back to a plain card showing the
+                  title and author, so the shelf never renders an empty slot.
+                {% endcomment %}
+                <span class="cover-placeholder">
+                  <span class="cover-placeholder-title">{{ item.title }}</span>
+                  {% if item.author %}
+                    <span class="cover-placeholder-author">{{ item.author }}</span>
+                  {% endif %}
+                </span>
+              {% endif %}
+              {% if item.status %}
+                {% assign statuses = 'abandoned,finished,interested,paused,queued,reading,reread' | split: ',' %}
+                {% assign status = item.status | downcase | strip %}
+                {% if statuses contains status %}
+                  <figcaption class="{{ status | downcase }}">{{ status | upcase }}</figcaption>
+                {% else %}
+                  <figcaption class="uncategorized">UNCATEGORIZED</figcaption>
+                {% endif %}
+              {% else %}
+                <figcaption class="uncategorized">UNCATEGORIZED</figcaption>
+              {% endif %}
+            </a>
+          </figure>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  {% endif %}
+{% endif %}

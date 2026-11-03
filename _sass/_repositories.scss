@@ -1,0 +1,261 @@
+/*******************************************************************************
+ * Repositories page
+ *
+ * The theme's stock version renders everything as <img> tags pointing at
+ * github-readme-stats.vercel.app and github-profile-trophy.vercel.app —
+ * two free third-party services that were returning 503 and 402 (payment
+ * required) when this was built. Rebuilt to talk to api.github.com
+ * directly instead: it's the same origin already used by _demos.scss's
+ * mountain/orange/green palette, so real cards, not generated images.
+ ******************************************************************************/
+
+.gh-profiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 1.5rem 0 2.5rem;
+}
+
+.gh-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 320px;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid var(--demo-rule);
+  border-radius: 10px;
+  background: var(--demo-surface);
+}
+
+.gh-profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gh-profile-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--global-text-color);
+}
+
+.gh-profile-handle {
+  font-size: 0.82rem;
+  color: var(--global-text-color-light);
+}
+
+.gh-profile-bio {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--global-text-color);
+}
+
+.gh-profile-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--global-text-color-light);
+
+  i {
+    margin-right: 0.3rem;
+    color: var(--demo-r);
+  }
+}
+
+/* Shared by repo cards and contribution cards, so the whole page reads as
+   one visual system. A mixin, not @extend: @extend would merge selectors
+   into one shared rule in the compiled CSS, and PurgeCSS operates on
+   selectors, not the classes within them — untested territory not worth
+   risking. A mixin copies the properties into each class independently,
+   so every class PurgeCSS sees is self-contained. */
+@mixin gh-card-base {
+  display: flex;
+  flex-direction: column;
+  // A flex item's default min-width is auto, meaning it won't shrink below
+  // its content's intrinsic width — a long unbroken token (a repo slug like
+  // bitcoindevkit/bdk_wallet, no spaces to wrap at) then pushes the card
+  // wider than its grid track instead of wrapping, spilling past the edge.
+  min-width: 0;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid var(--demo-rule);
+  border-radius: 10px;
+  background: var(--demo-surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+
+  &:hover {
+    text-decoration: none;
+    border-color: var(--demo-r);
+    transform: translateY(-2px);
+  }
+}
+
+.gh-repos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.gh-repo-card {
+  @include gh-card-base;
+}
+
+.gh-repo-name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--global-text-color);
+  overflow-wrap: anywhere;
+
+  i {
+    color: var(--demo-quiet);
+    font-size: 0.85rem;
+  }
+}
+
+.gh-repo-desc {
+  flex-grow: 1;
+  min-width: 0;
+  margin: 0.5rem 0 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--global-text-color-light);
+  overflow-wrap: anywhere;
+}
+
+.gh-repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.78rem;
+  color: var(--global-text-color-light);
+}
+
+.gh-repo-lang {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.gh-lang-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--demo-quiet);
+  flex-shrink: 0;
+}
+
+.gh-repo-meta i {
+  margin-right: 0.25rem;
+}
+
+/* Same pulsing placeholder as the blog demos, kept in sync deliberately. */
+.gh-loading {
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+  animation: gh-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gh-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-loading {
+    animation: none;
+  }
+}
+
+.gh-error {
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--demo-pad);
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+}
+
+.gh-contrib-group {
+  margin-bottom: 1.75rem;
+}
+
+.gh-contrib-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+
+  i {
+    font-size: 0.85rem;
+  }
+}
+
+.gh-contrib-heading--merged i {
+  color: var(--demo-s);
+}
+.gh-contrib-heading--open i {
+  color: var(--demo-r);
+}
+
+.gh-contribs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.9rem;
+}
+
+.gh-contrib-card {
+  @include gh-card-base;
+  padding: 0.85rem 1rem;
+  gap: 0.3rem;
+}
+
+.gh-contrib-title {
+  min-width: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--global-text-color);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.gh-contrib-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.76rem;
+  color: var(--global-text-color-light);
+  font-family: var(--bs-font-monospace, ui-monospace, monospace);
+  overflow-wrap: anywhere;
+
+  i {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+  }
+}
+
+.gh-contrib-card--merged .gh-contrib-meta i {
+  color: var(--demo-s);
+}
+.gh-contrib-card--open .gh-contrib-meta i {
+  color: var(--demo-r);
+}

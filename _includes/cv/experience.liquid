@@ -1,0 +1,170 @@
+{% comment %}
+  Unified work/experience entry renderer for both RenderCV and JSONResume formats
+  Handles both:
+  - RenderCV: company, position, start_date, end_date, location, url, summary, highlights
+  - JSONResume: name, position, startDate, endDate, location, url, summary, highlights
+
+  Consecutive entries at the same company are merged into one item: the company
+  becomes the heading, the date column spans the whole stay, and each position
+  is drawn as a step on a small vertical timeline, newest first.
+{% endcomment %}
+
+<ul class="card-text font-weight-light list-group list-group-flush">
+  {% assign skip_until = 0 %}
+  {% for entry in entries %}
+    {% assign i = forloop.index0 %}
+    {% if i < skip_until %}
+      {% continue %}
+    {% endif %}
+
+    {% assign company_name = entry.name | default: entry.company | default: entry.organization | default: '' %}
+
+    {% comment %} Count how many entries in a row share this company. {% endcomment %}
+    {% assign group_size = 0 %}
+    {% for other in entries offset: i %}
+      {% assign other_company = other.name | default: other.company | default: other.organization | default: '' %}
+      {% if company_name != '' and other_company == company_name %}
+        {% assign group_size = group_size | plus: 1 %}
+      {% else %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% if group_size < 1 %}
+      {% assign group_size = 1 %}
+    {% endif %}
+    {% assign skip_until = i | plus: group_size %}
+
+    {% if group_size > 1 %}
+      {% assign roles = entries | slice: i, group_size %}
+      {% assign newest = roles | first %}
+      {% assign oldest = roles | last %}
+      {% assign span_start = oldest.start_date | default: oldest.startDate | default: '' %}
+      {% assign span_end = newest.end_date | default: newest.endDate | default: '' %}
+      {% include cv/date_range.liquid start=span_start end=span_end %}
+
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-xs-2 col-sm-2 col-md-2 text-center date-column">
+            <table class="table-cv">
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="badge font-weight-bold danger-color-dark text-uppercase align-middle" style="min-width: 75px">{{ date }}</span>
+                  </td>
+                </tr>
+                {% if newest.location %}
+                  <tr>
+                    <td>
+                      <p class="location">
+                        <i class="fa-solid fa-location-dot iconlocation"></i>
+                        {{ newest.location }}
+                      </p>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+          <div class="col-xs-10 col-sm-10 col-md-10 mt-2 mt-md-0">
+            <h6 class="title font-weight-bold ml-1 ml-md-4">{{ company_name }}</h6>
+
+            <div class="cv-roles ml-1 ml-md-4">
+              {% for role in roles %}
+                {% assign role_start = role.start_date | default: role.startDate | default: '' %}
+                {% assign role_end = role.end_date | default: role.endDate | default: '' %}
+                {% include cv/date_range.liquid start=role_start end=role_end %}
+                {% assign role_end_stripped = role_end | strip | downcase %}
+
+                <div class="cv-role{% if role_end_stripped == '' or role_end_stripped == 'present' %} is-current{% endif %}">
+                  {% if role.url %}
+                    <h6 class="cv-role-title font-weight-bold">
+                      <a href="{{ role.url }}">{{ role.position }}</a>
+                    </h6>
+                  {% else %}
+                    <h6 class="cv-role-title font-weight-bold">{{ role.position }}</h6>
+                  {% endif %}
+                  <span class="cv-role-date">{{ date }}</span>
+
+                  {% if role.summary %}
+                    <h6 style="font-size: 0.95rem; font-style: italic">
+                      {{ role.summary | markdownify | remove: '<p>' | remove: '</p>' }}
+                    </h6>
+                  {% endif %}
+
+                  {% if role.highlights %}
+                    <ul class="items">
+                      {% for item in role.highlights %}
+                        <li>
+                          <span class="item">{{ item | markdownify | remove: '<p>' | remove: '</p>' }}</span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </li>
+    {% else %}
+      {% assign entry_start = entry.start_date | default: entry.startDate | default: '' %}
+      {% assign entry_end = entry.end_date | default: entry.endDate | default: '' %}
+      {% include cv/date_range.liquid start=entry_start end=entry_end %}
+
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-xs-2 col-sm-2 col-md-2 text-center date-column">
+            <table class="table-cv">
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="badge font-weight-bold danger-color-dark text-uppercase align-middle" style="min-width: 75px">{{ date }}</span>
+                  </td>
+                </tr>
+                {% if entry.location %}
+                  <tr>
+                    <td>
+                      <p class="location">
+                        <i class="fa-solid fa-location-dot iconlocation"></i>
+                        {{ entry.location }}
+                      </p>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+          <div class="col-xs-10 col-sm-10 col-md-10 mt-2 mt-md-0">
+            {% if entry.url %}
+              <h6 class="title font-weight-bold ml-1 ml-md-4">
+                <a href="{{ entry.url }}">{{ entry.position }}</a>
+              </h6>
+            {% elsif entry.position %}
+              <h6 class="title font-weight-bold ml-1 ml-md-4">{{ entry.position }}</h6>
+            {% endif %}
+
+            {% if company_name != '' %}
+              <h6 class="ml-1 ml-md-4" style="font-size: 0.95rem">{{ company_name }}</h6>
+            {% endif %}
+
+            {% if entry.summary %}
+              <h6 class="ml-1 ml-md-4" style="font-size: 0.95rem; font-style: italic">
+                {{ entry.summary | markdownify | remove: '<p>' | remove: '</p>' }}
+              </h6>
+            {% endif %}
+
+            {% if entry.highlights %}
+              <ul class="items">
+                {% for item in entry.highlights %}
+                  <li>
+                    <span class="item">{{ item | markdownify | remove: '<p>' | remove: '</p>' }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>

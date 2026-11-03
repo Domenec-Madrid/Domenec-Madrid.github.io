@@ -1,0 +1,32 @@
+# Papers and articles for the Reading page, newest at the top.
+#
+# A bare link is enough; title, authors, year, source and summary are read from
+# the page when the site builds:
+#
+#   - https://arxiv.org/abs/2505.15917
+#
+# Use the long form to add a comment of your own, or to fix anything the page
+# gets wrong (title, authors, year, site, kind: paper | article, description):
+#
+#   - url: https://example.com/some.pdf
+#     title: The real title
+#     note: Why it's worth reading.
+
+- url: https://bitcointalk.org/index.php?topic=278122.0
+  title: "CoinCovenants using SCIP signatures, an amusingly bad idea"
+  authors: [Gregory Maxwell]
+  year: 2013
+  site: Bitcointalk
+  kind: article
+  description: The thread where the word "covenant" first appears in Bitcoin, proposed half as a warning.
+
+- url: https://arxiv.org/abs/2505.15917
+  note: The estimate behind most of the 2025 urgency around post-quantum Bitcoin.
+
+- https://delvingbitcoin.org/t/ctv-op-templatehash-and-op-inputamounts/1344
+
+- url: https://maltemoeser.de/paper/covenants.pdf
+  title: Bitcoin Covenants
+  authors: [Malte Möser, Ittay Eyal, Emin Gün Sirer]
+  year: 2016
+  site: Financial Cryptography workshops

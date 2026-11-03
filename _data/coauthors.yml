@@ -1,0 +1,5 @@
+# Map coauthor last names to first name variants and profile URLs
+# Example:
+# "smith":
+#   - firstname: ["John", "J."]
+#     url: https://example.com/john-smith

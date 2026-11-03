@@ -1,0 +1,79 @@
+---
+layout: page
+---
+{% comment %}
+  Two sections on one page: the book shelf (the `books` collection) and a list of
+  papers and articles built from _data/reading.yml by _plugins/reading-links.rb.
+{% endcomment %}
+
+{% assign book_count = site[page.collection] | size %}
+{% assign papers = site.data.reading_items | default: empty %}
+
+{{ content }}
+
+<nav class="reading-nav" aria-label="Sections">
+  <a href="#books" class="reading-pill">
+    <i class="fa-solid fa-book-open"></i> Books <span class="reading-pill-count">{{ book_count }}</span>
+  </a>
+  <a href="#papers" class="reading-pill">
+    <i class="fa-solid fa-file-lines"></i> Papers &amp; articles <span class="reading-pill-count">{{ papers.size }}</span>
+  </a>
+</nav>
+
+<section class="reading-section" id="books">
+  <header class="reading-head">
+    <span class="reading-kicker">Shelf</span>
+    <h2>Books</h2>
+    <p>Fiction and non-fiction, grouped by genre. Click a cover for my notes.</p>
+  </header>
+  {% include book_shelf.liquid heading='h3' %}
+</section>
+
+<section class="reading-section" id="papers">
+  <header class="reading-head">
+    <span class="reading-kicker">Desk</span>
+    <h2>Papers &amp; articles</h2>
+    <p>Things I've read and keep coming back to, newest first.</p>
+  </header>
+
+  {% if papers.size > 0 %}
+    <ul class="reading-list">
+      {% for item in papers %}
+        <li class="reading-item">
+          <div class="reading-item-top">
+            {% if item.kind == 'paper' %}
+              <span class="reading-kind reading-kind-paper">Paper</span>
+            {% else %}
+              <span class="reading-kind reading-kind-article">Article</span>
+            {% endif %}
+            <span class="reading-site">{{ item.site }}</span>
+          </div>
+
+          <a class="reading-title" href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+
+          {% if item.authors.size > 0 or item.year != '' %}
+            <div class="reading-byline">
+              {% if item.authors.size > 3 %}
+                {{ item.authors | slice: 0, 3 | join: ', ' }} et al.
+              {% else %}
+                {{ item.authors | join: ', ' }}
+              {% endif %}
+              {% if item.authors.size > 0 and item.year != '' %}&middot;{% endif %}
+              {{ item.year }}
+            </div>
+          {% endif %}
+
+          {% if item.description != '' %}
+            <p class="reading-desc">{{ item.description }}</p>
+          {% endif %}
+
+          {% if item.note %}
+            <p class="reading-note">{{ item.note }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="reading-empty">Nothing here yet.</p>
+  {% endif %}
+</section>
